@@ -10,7 +10,6 @@ public:
 	void collision();
 	void setPos(sf::Vector2f pos);
 	void drawTo(sf::RenderWindow& window);
-	//sf::FloatRect getBounds();
 };
 
 #endif // !BRICK_H

@@ -1,7 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Block.h"
-#include "Brick.h"
+
+#include "PauseMenu.h"
+#include "Map.h"
+#include "ErrorCodes.h"
 
 using namespace std;
 int main()
@@ -13,37 +15,59 @@ int main()
     window.setFramerateLimit(120);
     window.setVerticalSyncEnabled(true);
 
-	sf::Texture dirtTexture;
-	if (!dirtTexture.loadFromFile("assets/sprites/dirt.png")) {
-		std::cout << "Load failed" << std::endl;
-		system("pause");
-	}
-
-	Block *brick = new Brick({ 200,200 }, &dirtTexture);
-	brick->setPos({ 300, 600 });
+	//BACKGROUND
+	sf::Texture backgroundTexture;
+	if (!backgroundTexture.loadFromFile("assets/sprites/background.png", sf::IntRect(0, 0, 1200, 800))) 
+		exit(LoadingCodes::BACKGROUND_CODE);
+	sf::Sprite background;
+	background.setTexture(backgroundTexture);
 	
+	//FONT
+	sf::Font minecraft;
+	minecraft.loadFromFile("assets/fonts/minecraft.ttf");
 
-    //load game -> create map
+
+	PauseMenu pauseMenu(window, minecraft);
 
 	while (window.isOpen()) {
 		sf::Event event;
 
+		//JUMP
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			
+		}
+		//RIGHT
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			
+		}
+		//LEFT
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+			
+		}
+
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 
-				//CHANGE WINDOW
+			//CHANGE WINDOW
 			case sf::Event::LostFocus:
-				std::cout << "pouet" << std::endl;
-				
+				pauseMenu.start();
 				break;
-
-				//CLOSE WINDOW
+			//CLOSE WINDOW
 			case sf::Event::Closed:
 				window.close();
 				break;
+
+			//ESCAPE
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Escape) {
+					pauseMenu.switchMode();
+				}
 			}
 		}
-		brick->drawTo(window);
+		window.clear();
+		window.draw(background);
+		pauseMenu.drawTo(window);
+		window.display();
 	}
 
     return EXIT_SUCCESS;
