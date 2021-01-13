@@ -1,4 +1,3 @@
-#pragma once
 enum LoadingCodes
 {
 	PLAYER_CODE = 10,
