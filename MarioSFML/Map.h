@@ -3,8 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include "Block.h"
-#include "Brick.h"
-#include "Coin.h"
 
 class Map
 {

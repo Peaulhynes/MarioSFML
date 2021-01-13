@@ -5,6 +5,7 @@ Player::Player(sf::Vector2f size, sf::Texture* texture) {
     player.setSize(size);
     player.setTexture(texture);
 	this->moveSpeed = 5.f;
+	this->isJumping = false;
 }
 
 void Player::drawTo(sf::RenderWindow& window) {
@@ -31,7 +32,8 @@ void Player::inputProcessing() {
 
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-		std::cout << "jump" << std::endl;
+		move({ 0, -moveSpeed });
+		isJumping = true;
 	}
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
@@ -39,7 +41,7 @@ void Player::inputProcessing() {
 	}
 	//LEFT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-		move({ -moveSpeed, 0 });
+		if (getX() > moveSpeed)
+			move({ -moveSpeed, 0 });
 	}
-
 }

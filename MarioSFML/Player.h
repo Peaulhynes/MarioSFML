@@ -7,6 +7,7 @@ class Player
 private:
     sf::RectangleShape player;
     float moveSpeed;
+    bool isJumping;
 
 public:
     Player(sf::Vector2f size, sf::Texture* texture);

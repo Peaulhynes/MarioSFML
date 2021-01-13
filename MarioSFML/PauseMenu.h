@@ -1,6 +1,7 @@
 #ifndef PAUSEMENU_H
 #define PAUSEMENU_H
 #include <SFML/Graphics.hpp>
+
 class PauseMenu
 {
 private:

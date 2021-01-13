@@ -17,6 +17,9 @@ PauseMenu::PauseMenu(sf::RenderWindow& window, sf::Font& font) {
 	
 	//Active
 	this->active = false;
+	// récupération de la position de la souris dans la fenêtre
+	
+
 }
 
 PauseMenu::~PauseMenu(){}

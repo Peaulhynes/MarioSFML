@@ -6,10 +6,9 @@
 #include "ErrorCodes.h"
 
 #include "Block.h"
-#include "Brick.h"
 #include "Coin.h"
-#include "Ground.h"
 #include "Player.h"
+#include "Enemy.h"
 
 using namespace std;
 
@@ -106,15 +105,18 @@ int main()
 
 		window.clear();
 		window.draw(background);
+
+		// Stuff affected by the view
 		window.setView(view);
 
 		for (int i = 0; i < groundVector.size(); i++) {
 			groundVector[i]->drawTo(window);
 		}
 		player.drawTo(window);
-		pauseMenu.drawTo(window);
-
+	
+		// Stuff not affected by the view
 		window.setView(window.getDefaultView());
+		pauseMenu.drawTo(window);
 
 		window.display();
 	}
