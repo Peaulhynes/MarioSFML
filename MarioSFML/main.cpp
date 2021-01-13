@@ -43,9 +43,8 @@ int main()
 	
 	//GROUND
 	sf::Texture groundTexture;
-	if (!groundTexture.loadFromFile("assets/sprites/dirt.png")) {
-		std::cout << "Load failed" << std::endl;
-		system("pause");
+	if (!groundTexture.loadFromFile("assets/sprites/ground.png")) {
+		exit(LoadingCodes::GROUND_CODE);
 	}
 	std::vector<Ground*> groundVector;
 	for (int i = 0; i < groundLayers; i++) {
@@ -75,19 +74,6 @@ int main()
 	while (window.isOpen()) {
 		sf::Event event;
 
-		//JUMP
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-			
-		}
-		//RIGHT
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			
-		}
-		//LEFT
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			
-		}
-
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 
@@ -107,6 +93,17 @@ int main()
 				}
 			}
 		}
+		if (!pauseMenu.getActive())
+			player.inputProcessing();
+
+		//Camera scrolling (to do for the end of map)
+		if (player.getX() + 10 > windowWidth / 2)
+			screenPosition.x = player.getX() + 10;
+		else
+			screenPosition.x = windowWidth / 2;
+
+		view.setCenter(screenPosition);
+
 		window.clear();
 		window.draw(background);
 		window.setView(view);

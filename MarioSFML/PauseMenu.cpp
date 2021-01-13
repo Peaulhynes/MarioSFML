@@ -21,6 +21,10 @@ PauseMenu::PauseMenu(sf::RenderWindow& window, sf::Font& font) {
 
 PauseMenu::~PauseMenu(){}
 
+bool PauseMenu::getActive() {
+	return active;
+}
+
 void PauseMenu::start() {
 	active = true;
 }

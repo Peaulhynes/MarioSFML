@@ -11,6 +11,7 @@ private:
 public:
 	PauseMenu(sf::RenderWindow& window, sf::Font& font);
 	~PauseMenu();
+	bool getActive();
 	void start();
 	void end();
 	void switchMode();

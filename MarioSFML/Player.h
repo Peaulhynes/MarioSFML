@@ -6,6 +6,7 @@ class Player
 {
 private:
     sf::RectangleShape player;
+    float moveSpeed;
 
 public:
     Player(sf::Vector2f size, sf::Texture* texture);
@@ -13,7 +14,9 @@ public:
     void drawTo(sf::RenderWindow& window);
     void move(sf::Vector2f distance);
     void setPos(sf::Vector2f newPos);
+    int getX();
     int getY();
+    void inputProcessing();
 };
 
 #endif
