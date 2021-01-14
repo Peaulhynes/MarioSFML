@@ -22,6 +22,7 @@ int main()
 
 	const int groundLayers = 3;
 
+
 	//WINDOW
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Mario SFML");
     window.setFramerateLimit(120);
@@ -53,6 +54,41 @@ int main()
 			dirt->setPos({ blockSize * j, windowHeight - blockSize * i });
 		}
 	}
+
+	float groundY = windowHeight - (blockSize * groundLayers);
+
+	//ENEMIES
+	sf::Texture gombaTexture;
+	if (!gombaTexture.loadFromFile("assets/sprites/gomba.png")) {
+		exit(LoadingCodes::GOMBA_CODE);
+	}
+
+	std::vector<Gomba*> gombaVector;
+	Gomba enemy1({ blockSize, blockSize }, &gombaTexture);
+	Gomba enemy2({ blockSize, blockSize }, &gombaTexture);
+	Gomba enemy3({ blockSize, blockSize }, &gombaTexture);
+	gombaVector.push_back(&enemy1);
+	gombaVector.push_back(&enemy2);
+	gombaVector.push_back(&enemy3);
+	enemy1.setPos({ 300, groundY });
+	enemy2.setPos({ 500, groundY });
+	enemy3.setPos({ 700, groundY });
+
+	//COINS
+	sf::Texture cointexture;
+	if (!cointexture.loadFromFile("assets/sprites/coin.png")) {
+		exit(LoadingCodes::COIN_CODE);
+	}
+	std::vector<Coin*> coinVector;
+	Coin coin1({ blockSize, blockSize }, &cointexture);
+	Coin coin2({ blockSize, blockSize }, &cointexture);
+	Coin coin3({ blockSize, blockSize }, &cointexture);
+	coinVector.push_back(&coin1);
+	coinVector.push_back(&coin2);
+	coinVector.push_back(&coin3);
+	coin1.setPos({ 200, 600 });
+	coin2.setPos({ 120, 600 });
+	coin3.setPos({ 400, 520 });
 
 	//PLAYER
 	sf::Texture playertexture;
@@ -95,11 +131,13 @@ int main()
 		if (!pauseMenu.getActive())
 			player.inputProcessing();
 
-		//Camera scrolling (to do for the end of map)
-		if (player.getX() + 10 > windowWidth / 2)
-			screenPosition.x = player.getX() + 10;
-		else
+		//Camera scrolling
+		if (player.getX() + 10 < windowWidth / 2)
 			screenPosition.x = windowWidth / 2;
+		else if (player.getX() + 10 > (blockSize * blockPerLine) - windowWidth / 2)
+			screenPosition.x = (blockSize * blockPerLine) - windowWidth / 2;
+		else
+			screenPosition.x = player.getX() + 10;
 
 		view.setCenter(screenPosition);
 
@@ -112,7 +150,17 @@ int main()
 		for (int i = 0; i < groundVector.size(); i++) {
 			groundVector[i]->drawTo(window);
 		}
+
+		for (int i = 0; i < gombaVector.size(); i++) {
+			gombaVector[i]->drawTo(window);
+		}
+
+		for (int i = 0; i < coinVector.size(); i++) {
+			coinVector[i]->drawTo(window);
+		}
+
 		player.drawTo(window);
+		
 	
 		// Stuff not affected by the view
 		window.setView(window.getDefaultView());
