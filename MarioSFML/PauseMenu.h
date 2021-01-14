@@ -1,19 +1,21 @@
 #ifndef PAUSEMENU_H
 #define PAUSEMENU_H
 #include <SFML/Graphics.hpp>
+#include "AssetsManager.h"
 
 class PauseMenu
 {
 public:
-	PauseMenu(sf::RenderWindow& window, sf::Font& font);
+	PauseMenu(AssetsManager& assets, sf::RenderWindow& window);
 	~PauseMenu();
 	bool getActive();
 	void start();
 	void end();
 	void switchMode();
-	void drawTo(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window);
 private:
-	sf::RectangleShape pauseOverlay;
+	
+	sf::RectangleShape overlay;
 	sf::Text message;
 	bool active;
 };

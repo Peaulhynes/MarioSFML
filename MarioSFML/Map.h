@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <SFML/Graphics.hpp>
+#include "Game.h"
 #include "Coin.h"
 #include "Enemy.h"
 #include "Block.h"
@@ -9,14 +9,21 @@
 
 class Map
 {
-private:
-	sf::Sprite background;
-	//Player* player;
-	float gravity;
 public:
-	Map();
+	sf::Sprite background;
+	Player *player;
+	std::vector<Ground*> groundVector;
+	std::vector<Enemy*> enemyVector;
+	std::vector<Coin*> coinVector;
+
+	float gravity;
+	float blockSize;
+	sf::Vector2f size;
+
+public:
+	Map(AssetsManager& assets, sf::RenderWindow& window);
 	~Map();
-	void drawTo(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window);
 };
 
 #endif // !MAP_H

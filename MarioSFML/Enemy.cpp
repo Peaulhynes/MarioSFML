@@ -16,11 +16,11 @@ void Enemy::move(sf::Vector2f distance) {
     enemy.move(distance);
 }
 
-void Enemy::setPos(sf::Vector2f pos) {
+void Enemy::setPosition(sf::Vector2f pos) {
     enemy.setPosition(pos);
 }
 
-void Enemy::drawTo(sf::RenderWindow& window) {
+void Enemy::draw(sf::RenderWindow& window) {
     window.draw(enemy);
 }
 

@@ -19,11 +19,11 @@ sf::FloatRect Block::getGlobalBounds() {
 	return block.getGlobalBounds();
 }
 
-void Block::setPos(sf::Vector2f pos) {
+void Block::setPosition(sf::Vector2f pos) {
 	block.setPosition(pos);
 }
 
-void Block::drawTo(sf::RenderWindow& window) {
+void Block::draw(sf::RenderWindow& window) {
 	window.draw(block);
 }
 

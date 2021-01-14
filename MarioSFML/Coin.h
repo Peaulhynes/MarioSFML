@@ -7,8 +7,8 @@ class Coin
 public:
     Coin(sf::Vector2f size, sf::Texture* texture);
     sf::FloatRect getGlobalBounds();
-    void setPos(sf::Vector2f newPos);
-    void drawTo(sf::RenderWindow& window);
+    void setPosition(sf::Vector2f newPos);
+    void draw(sf::RenderWindow& window);
 private:
     sf::RectangleShape coin;
 };

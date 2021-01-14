@@ -1,44 +1,30 @@
 #include "Map.h"
-#include "ErrorCodes.h"
+#include "AssetsManager.h"
 #include <iostream>
 
-Map::Map() {
+Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
+
+	int groundLayers = 3;
+	int blockPerLine = 60;
 
 	this->gravity = 9.81;
-	//NE FONCTIONNE PAS : texture détruite à la fin de la fonction
+	this->blockSize = 40;
+	this->size = sf::Vector2f{ blockPerLine * blockSize, (float)window.getSize().y };
 
-	/*
-	sf::Texture backgroundTexture;
-	if (!backgroundTexture.loadFromFile("assets/sprites/background.png", sf::IntRect(0, 0, 1200, 800))) {
-		std::cout << "[ERROR] Load background texture failed." << std::endl;
-		exit(LoadingCodes::BACKGROUND_CODE);
-	}
-	this->background.setTexture(backgroundTexture);
-	*/
+	this->background.setTexture(assets.getTRef("background"));
+	this->player = new Player({ 40, 40 }, &assets.getTRef("player"));
+	player->setPosition({ 50 , size.y - groundLayers * blockSize });
 
-
-
-	/* ANCIEN CODE : dans l'idéal, reproduire tout ça dans une classe map
-	
-	//GROUND
-	sf::Texture groundTexture;
-	if (!groundTexture.loadFromFile("assets/sprites/ground.png")) {
-		exit(LoadingCodes::GROUND_CODE);
-	}
-	std::vector<Ground*> groundVector;
 	for (int i = 0; i < groundLayers; i++) {
 		for (int j = 0; j < blockPerLine; j++) {
-			Ground* dirt = new Ground({ blockSize, blockSize }, &groundTexture);
-			groundVector.push_back(dirt);
-			dirt->setPos({ blockSize * j, windowHeight - blockSize * i });
+			Ground* ground = new Ground({ blockSize, blockSize }, &assets.getTRef("ground"));
+			groundVector.push_back(ground);
+			ground->setPosition({ blockSize * j, size.y - blockSize * i });
 		}
 	}
 
+	/*
 	//ENEMIES
-	sf::Texture gombaTexture;
-	if (!gombaTexture.loadFromFile("assets/sprites/gomba.png")) {
-		exit(LoadingCodes::GOMBA_CODE);
-	}
 
 	std::vector<Gomba*> gombaVector;
 	Gomba enemy1({ BLOCK_SIZE, BLOCK_SIZE }, &gombaTexture);
@@ -52,10 +38,7 @@ Map::Map() {
 	enemy3.setPos({ 700, 600 });
 
 	//COINS
-	sf::Texture cointexture;
-	if (!cointexture.loadFromFile("assets/sprites/coin.png")) {
-		exit(LoadingCodes::COIN_CODE);
-	}
+	
 	std::vector<Coin*> coinVector;
 	Coin coin1({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
 	Coin coin2({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
@@ -72,6 +55,19 @@ Map::Map() {
 Map::~Map() {
 }
 
-void Map::drawTo(sf::RenderWindow& window) {
+void Map::draw(sf::RenderWindow& window) {
 	window.draw(this->background);
+	this->player->draw(window);
+	for (int i = 0; i < groundVector.size(); i++) {
+		groundVector[i]->draw(window);
+	}
+	/*
+	for (int i = 0; i < gombaVector.size(); i++) {
+		gombaVector[i]->draw(window);
+	}
+
+	for (int i = 0; i < coinVector.size(); i++) {
+		coinVector[i]->draw(window);
+	}
+	*/
 }

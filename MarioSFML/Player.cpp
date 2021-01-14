@@ -9,7 +9,7 @@ Player::Player(sf::Vector2f size, sf::Texture* texture) {
 	this->isJumping = false;
 }
 
-void Player::drawTo(sf::RenderWindow& window) {
+void Player::draw(sf::RenderWindow& window) {
     window.draw(player);
 }
 
@@ -17,7 +17,7 @@ void Player::move(sf::Vector2f distance) {
     player.move(distance);
 }
 
-void Player::setPos(sf::Vector2f newPos) {
+void Player::setPosition(sf::Vector2f newPos) {
     player.setPosition(newPos);
 }
 

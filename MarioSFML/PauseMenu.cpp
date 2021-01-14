@@ -1,14 +1,16 @@
 #include "PauseMenu.h"
+#include "Game.h"
+#include "ErrorCodes.h"
 
-PauseMenu::PauseMenu(sf::RenderWindow& window, sf::Font& font) {
+PauseMenu::PauseMenu(AssetsManager& assets, sf::RenderWindow& window) {
 
 	//Overlay
-	this->pauseOverlay = sf::RectangleShape(sf::Vector2f(window.getSize().x, window.getSize().y));
-	pauseOverlay.setFillColor(sf::Color(0, 0, 0, 200));
+	this->overlay = sf::RectangleShape(sf::Vector2f(window.getSize().x, window.getSize().y));
+	overlay.setFillColor(sf::Color(0, 0, 0, 200));
 
 	//Message
 	message.setString("PAUSE");
-	message.setFont(font);
+	message.setFont(assets.getFRef("minecraft"));
 	message.setCharacterSize(100);
 	sf::FloatRect messageRect = message.getLocalBounds();
 	message.setOrigin(messageRect.left + messageRect.width / 2.0f,
@@ -37,9 +39,9 @@ void PauseMenu::switchMode() {
 	active = !active;
 }
 
-void PauseMenu::drawTo(sf::RenderWindow& window) {
+void PauseMenu::draw(sf::RenderWindow& window) {
 	if (active) {
-		window.draw(pauseOverlay);
+		window.draw(overlay);
 		window.draw(message);
 	}
 }

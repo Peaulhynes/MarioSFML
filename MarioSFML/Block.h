@@ -13,8 +13,8 @@ public:
 	int getX();
 	int getY();
 	sf::FloatRect getGlobalBounds();
-	void setPos(sf::Vector2f pos);
-	void drawTo(sf::RenderWindow& window);
+	void setPosition(sf::Vector2f pos);
+	void draw(sf::RenderWindow& window);
 protected:
 	sf::RectangleShape block;
 };
