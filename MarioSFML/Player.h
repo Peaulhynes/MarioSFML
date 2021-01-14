@@ -2,13 +2,13 @@
 #define PLAYER_H
 
 #include <SFML/Graphics.hpp>
+#include "Coin.h"
+#include "Enemy.h"
+#include "Block.h"
+#include "Directions.h"
+
 class Player
 {
-private:
-    sf::RectangleShape player;
-    float moveSpeed;
-    bool isJumping;
-
 public:
     Player(sf::Vector2f size, sf::Texture* texture);
     ~Player() = default;
@@ -17,7 +17,16 @@ public:
     void setPos(sf::Vector2f newPos);
     int getX();
     int getY();
+    sf::FloatRect getGlobalBounds();
+    bool isCollidingWithCoin(Coin* coin);
+    bool isCollidingWithEnemy(Enemy* enemy);
+    int collidesWithGround(Ground* ground);
     void inputProcessing();
+private:
+    sf::RectangleShape player;
+    float size;
+    float moveSpeed;
+    bool isJumping;
 };
 
 #endif

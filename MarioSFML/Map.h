@@ -2,12 +2,17 @@
 #define MAP_H
 
 #include <SFML/Graphics.hpp>
+#include "Coin.h"
+#include "Enemy.h"
 #include "Block.h"
+#include "Player.h"
 
 class Map
 {
-public:
+private:
 	sf::Sprite background;
+	//Player* player;
+	float gravity;
 public:
 	Map();
 	~Map();

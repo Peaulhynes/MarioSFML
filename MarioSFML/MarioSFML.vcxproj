@@ -30,6 +30,7 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Directions.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="ErrorCodes.h" />
     <ClInclude Include="Map.h" />

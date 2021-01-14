@@ -4,11 +4,6 @@
 
 class PauseMenu
 {
-private:
-	sf::RectangleShape pauseOverlay;
-	sf::Text message;
-	bool active;
-
 public:
 	PauseMenu(sf::RenderWindow& window, sf::Font& font);
 	~PauseMenu();
@@ -17,6 +12,10 @@ public:
 	void end();
 	void switchMode();
 	void drawTo(sf::RenderWindow& window);
+private:
+	sf::RectangleShape pauseOverlay;
+	sf::Text message;
+	bool active;
 };
 
 #endif // !PAUSEMENU_H

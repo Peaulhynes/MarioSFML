@@ -103,11 +103,18 @@ int main()
 	sf::Font minecraft;
 	minecraft.loadFromFile("assets/fonts/minecraft.ttf");
 
-
 	PauseMenu pauseMenu(window, minecraft);
+
+	for (int i = 0; i < groundVector.size(); i++) {
+		std::cout << player.collidesWithGround(groundVector[i]) << std::endl;
+	}
 
 	while (window.isOpen()) {
 		sf::Event event;
+
+		
+		
+		
 
 		while (window.pollEvent(event)) {
 			switch (event.type) {
@@ -120,6 +127,13 @@ int main()
 			case sf::Event::Closed:
 				window.close();
 				break;
+
+			/* OPTIONNAL : WINDOW RESIZED (to fix)
+			case sf::Event::Resized:
+				windowWidth = event.size.width;
+				windowHeight = event.size.height;
+				break;
+			*/
 
 			//ESCAPE
 			case sf::Event::KeyPressed:
@@ -167,7 +181,10 @@ int main()
 		pauseMenu.drawTo(window);
 
 		window.display();
+
+		
 	}
 
+	//delete groundVector;
     return EXIT_SUCCESS;
 }

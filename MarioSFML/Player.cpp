@@ -4,6 +4,7 @@
 Player::Player(sf::Vector2f size, sf::Texture* texture) {
     player.setSize(size);
     player.setTexture(texture);
+	this->size = size.y;
 	this->moveSpeed = 5.f;
 	this->isJumping = false;
 }
@@ -28,12 +29,41 @@ int Player::getY() {
     return player.getPosition().y;
 }
 
+sf::FloatRect Player::getGlobalBounds() {
+	return player.getGlobalBounds();
+}
+
+bool Player::isCollidingWithCoin(Coin* coin) {
+	return player.getGlobalBounds().intersects(coin->getGlobalBounds());
+}
+
+bool Player::isCollidingWithEnemy(Enemy* enemy) {
+	return player.getGlobalBounds().intersects(enemy->getGlobalBounds());
+}
+
+int Player::collidesWithGround(Ground* ground) {
+	if (player.getGlobalBounds().intersects(ground->getGlobalBounds())) {
+		if (getY() < ground->getY()) {
+			return Directions::UP;
+		}
+		else if (getY() + size > ground->getY()) {
+			return Directions::DOWN;
+		}
+	}
+	else
+		return -1;
+}
+
 void Player::inputProcessing() {
 
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		move({ 0, -moveSpeed });
 		isJumping = true;
+	}
+	else {
+		//move({ 0, moveSpeed });
+		isJumping = false;
 	}
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
@@ -44,4 +74,5 @@ void Player::inputProcessing() {
 		if (getX() > moveSpeed)
 			move({ -moveSpeed, 0 });
 	}
+
 }

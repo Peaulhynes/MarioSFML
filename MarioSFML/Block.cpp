@@ -7,32 +7,30 @@ Block::Block(sf::Vector2f size, sf::Texture* texture) {
 	block.setTexture(texture);
 }
 
+int Block::getX() {
+	return block.getPosition().x;
+}
+
+int Block::getY() {
+	return block.getPosition().y;
+}
+
+sf::FloatRect Block::getGlobalBounds() {
+	return block.getGlobalBounds();
+}
+
+void Block::setPos(sf::Vector2f pos) {
+	block.setPosition(pos);
+}
+
+void Block::drawTo(sf::RenderWindow& window) {
+	window.draw(block);
+}
+
 /* --------------- GROUND --------------- */
 
 Ground::Ground(sf::Vector2f size, sf::Texture* texture) : Block(size, texture){}
 
-void Ground::collision() {
-}
-
-void Ground::setPos(sf::Vector2f pos) {
-	block.setPosition(pos);
-}
-
-void Ground::drawTo(sf::RenderWindow& window) {
-	window.draw(block);
-}
-
 /* --------------- BRICK --------------- */
 
 Brick::Brick(sf::Vector2f size, sf::Texture* texture) : Block(size, texture) {}
-
-void Brick::collision() {
-}
-
-void Brick::setPos(sf::Vector2f pos) {
-	block.setPosition(pos);
-}
-
-void Brick::drawTo(sf::RenderWindow& window) {
-	window.draw(block);
-}

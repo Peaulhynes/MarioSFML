@@ -2,16 +2,15 @@
 #define COIN_H
 #include <SFML/Graphics.hpp>
 
-class Coin {
-
-private:
-    sf::RectangleShape coin;
-
+class Coin 
+{
 public:
     Coin(sf::Vector2f size, sf::Texture* texture);
-    void drawTo(sf::RenderWindow& window);
     sf::FloatRect getGlobalBounds();
     void setPos(sf::Vector2f newPos);
+    void drawTo(sf::RenderWindow& window);
+private:
+    sf::RectangleShape coin;
 };
 
 #endif // !COIN_H

@@ -4,14 +4,17 @@
 
 Map::Map() {
 
+	this->gravity = 9.81;
 	//NE FONCTIONNE PAS : texture détruite à la fin de la fonction
+
+	/*
 	sf::Texture backgroundTexture;
 	if (!backgroundTexture.loadFromFile("assets/sprites/background.png", sf::IntRect(0, 0, 1200, 800))) {
 		std::cout << "[ERROR] Load background texture failed." << std::endl;
 		exit(LoadingCodes::BACKGROUND_CODE);
 	}
 	this->background.setTexture(backgroundTexture);
-
+	*/
 
 
 
