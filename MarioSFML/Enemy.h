@@ -8,11 +8,11 @@
 class Enemy
 {
 public:
-	Enemy(sf::Vector2f size, sf::Texture* texture);
+	Enemy(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
 	~Enemy() = default;
 	sf::FloatRect getGlobalBounds();
 	void move(sf::Vector2f distance);
-	void setPosition(sf::Vector2f pos);
+	void setPosition(sf::Vector2f position);
 	void draw(sf::RenderWindow& window);
 
 protected:
@@ -25,7 +25,7 @@ protected:
 class Gomba : public Enemy
 {
 public:
-	Gomba(sf::Vector2f size, sf::Texture* texture);
+	Gomba(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
 	~Gomba() = default;
 };
 

@@ -14,26 +14,21 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 	float groundY = size.y - groundLayers * blockSize;
 
 	this->background.setTexture(assets.getTRef("background"));
-	this->player = new Player({ 40, 40 }, &assets.getTRef("player"));
-	player->setPosition({ 50 , groundY });
+	this->player = new Player({ 40, 40 }, &assets.getTRef("player"), { 50, groundY });
 
 	for (int i = 0; i < groundLayers; i++) {
 		for (int j = 0; j < blockPerLine; j++) {
-			Ground* ground = new Ground({ blockSize, blockSize }, &assets.getTRef("ground"));
+			Ground* ground = new Ground({ blockSize, blockSize }, &assets.getTRef("ground"), { blockSize * j, size.y - blockSize * i });
 			groundVector.push_back(ground);
-			ground->setPosition({ blockSize * j, size.y - blockSize * i });
 		}
 	}
 
-	Gomba* enemy1 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"));
-	Gomba* enemy2 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"));
-	Gomba* enemy3 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"));
+	Gomba* enemy1 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { 300, groundY });
+	Gomba* enemy2 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { 500, groundY });
+	Gomba* enemy3 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { 700, groundY });
 	enemyVector.push_back(enemy1);
 	enemyVector.push_back(enemy2);
 	enemyVector.push_back(enemy3);
-	enemy1->setPosition({ 300, groundY });
-	enemy2->setPosition({ 500, groundY });
-	enemy3->setPosition({ 700, groundY });
 
 	//COINS
 	/*
@@ -51,6 +46,9 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 }
 
 Map::~Map() {
+
+	delete player;
+
 	for (int i = 0; i < groundVector.size(); i++) {
 		delete groundVector[i];
 	}

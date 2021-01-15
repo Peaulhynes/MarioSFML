@@ -24,6 +24,7 @@ Game::~Game()
 {
 	delete pauseMenu;
 	delete map;
+	delete view;
 }
 
 void Game::loadTextures() {
@@ -40,8 +41,6 @@ void Game::loadFonts() {
 
 void Game::gameLoop()
 {
-	
-
 	sf::Clock clock;
     while (this->window.isOpen())
     {
@@ -68,8 +67,10 @@ void Game::gameLoop()
 				}
 			}
 		}
+
 		if (!pauseMenu->getActive())
 			map->player->inputProcessing(deltaTime);
+
 
 		view->update();
 		

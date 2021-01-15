@@ -1,11 +1,12 @@
 #include "Player.h"
 #include <iostream>
 
-Player::Player(sf::Vector2f size, sf::Texture* texture) {
+Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
     player.setSize(size);
     player.setTexture(texture);
+	player.setPosition(position);
 	this->size = size.y;
-	this->moveSpeed = 5.f;
+	this->moveSpeed = 200.f;
 	this->isJumping = false;
 }
 
@@ -17,8 +18,8 @@ void Player::move(sf::Vector2f distance) {
     player.move(distance);
 }
 
-void Player::setPosition(sf::Vector2f newPos) {
-    player.setPosition(newPos);
+void Player::setPosition(sf::Vector2f position) {
+    player.setPosition(position);
 }
 
 int Player::getX() {
@@ -58,7 +59,7 @@ void Player::inputProcessing(float deltaTime) {
 
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-		move({ 0, -moveSpeed });
+		move({ 0, -moveSpeed * deltaTime });
 		isJumping = true;
 	}
 	else {
@@ -67,13 +68,11 @@ void Player::inputProcessing(float deltaTime) {
 	}
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		
-		move({ moveSpeed, 0 });
+		move({ moveSpeed * deltaTime, 0 });
 	}
 	//LEFT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-		if (getX() > moveSpeed)
-			move({ -moveSpeed, 0 });
+		if (getX() > moveSpeed * deltaTime)
+			move({ -moveSpeed * deltaTime, 0 });
 	}
-
 }

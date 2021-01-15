@@ -2,7 +2,6 @@
 #define MAP_H
 
 #include "Game.h"
-#include "Coin.h"
 #include "Enemy.h"
 #include "Block.h"
 #include "Player.h"

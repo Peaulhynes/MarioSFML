@@ -2,9 +2,10 @@
 
 /* --------------- BLOCK --------------- */
 
-Block::Block(sf::Vector2f size, sf::Texture* texture) {
+Block::Block(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	block.setSize(size);
 	block.setTexture(texture);
+	block.setPosition(position);
 }
 
 int Block::getX() {
@@ -19,8 +20,8 @@ sf::FloatRect Block::getGlobalBounds() {
 	return block.getGlobalBounds();
 }
 
-void Block::setPosition(sf::Vector2f pos) {
-	block.setPosition(pos);
+void Block::setPosition(sf::Vector2f position) {
+	block.setPosition(position);
 }
 
 void Block::draw(sf::RenderWindow& window) {
@@ -29,8 +30,12 @@ void Block::draw(sf::RenderWindow& window) {
 
 /* --------------- GROUND --------------- */
 
-Ground::Ground(sf::Vector2f size, sf::Texture* texture) : Block(size, texture){}
+Ground::Ground(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}
 
 /* --------------- BRICK --------------- */
 
-Brick::Brick(sf::Vector2f size, sf::Texture* texture) : Block(size, texture) {}
+Brick::Brick(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}
+
+/* --------------- COIN --------------- */
+
+Coin::Coin(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}
