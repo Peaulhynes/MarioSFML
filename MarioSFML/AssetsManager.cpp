@@ -1,5 +1,4 @@
 #include "AssetsManager.h"
-#include "ErrorCodes.h"
 
 std::map<std::string, sf::Texture> AssetsManager::getTextures() {
     return textures;

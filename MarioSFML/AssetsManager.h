@@ -5,6 +5,13 @@
 #include <map>
 #include <string>
 
+enum LoadingCodes
+{
+    LOADING_TEXTURE_CODE,
+    LOADING_FONT_CODE
+};
+
+
 class AssetsManager
 {
 

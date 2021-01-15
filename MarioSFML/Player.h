@@ -21,7 +21,7 @@ public:
     bool isCollidingWithCoin(Coin* coin);
     bool isCollidingWithEnemy(Enemy* enemy);
     int collidesWithGround(Ground* ground);
-    void inputProcessing();
+    void inputProcessing(float deltaTime);
 
 private:
     sf::RectangleShape player;

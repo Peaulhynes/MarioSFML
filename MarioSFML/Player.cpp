@@ -54,7 +54,7 @@ int Player::collidesWithGround(Ground* ground) {
 		return -1;
 }
 
-void Player::inputProcessing() {
+void Player::inputProcessing(float deltaTime) {
 
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -67,6 +67,7 @@ void Player::inputProcessing() {
 	}
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		
 		move({ moveSpeed, 0 });
 	}
 	//LEFT

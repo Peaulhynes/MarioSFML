@@ -11,9 +11,11 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 	this->blockSize = 40;
 	this->size = sf::Vector2f{ blockPerLine * blockSize, (float)window.getSize().y };
 
+	float groundY = size.y - groundLayers * blockSize;
+
 	this->background.setTexture(assets.getTRef("background"));
 	this->player = new Player({ 40, 40 }, &assets.getTRef("player"));
-	player->setPosition({ 50 , size.y - groundLayers * blockSize });
+	player->setPosition({ 50 , groundY });
 
 	for (int i = 0; i < groundLayers; i++) {
 		for (int j = 0; j < blockPerLine; j++) {
@@ -23,22 +25,18 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 		}
 	}
 
-	/*
-	//ENEMIES
-
-	std::vector<Gomba*> gombaVector;
-	Gomba enemy1({ BLOCK_SIZE, BLOCK_SIZE }, &gombaTexture);
-	Gomba enemy2({ BLOCK_SIZE, BLOCK_SIZE }, &gombaTexture);
-	Gomba enemy3({ BLOCK_SIZE, BLOCK_SIZE }, &gombaTexture);
-	gombaVector.push_back(&enemy1);
-	gombaVector.push_back(&enemy2);
-	gombaVector.push_back(&enemy3);
-	enemy1.setPos({ 300, 600 });
-	enemy2.setPos({ 500, 600 });
-	enemy3.setPos({ 700, 600 });
+	Gomba* enemy1 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"));
+	Gomba* enemy2 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"));
+	Gomba* enemy3 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"));
+	enemyVector.push_back(enemy1);
+	enemyVector.push_back(enemy2);
+	enemyVector.push_back(enemy3);
+	enemy1->setPosition({ 300, groundY });
+	enemy2->setPosition({ 500, groundY });
+	enemy3->setPosition({ 700, groundY });
 
 	//COINS
-	
+	/*
 	std::vector<Coin*> coinVector;
 	Coin coin1({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
 	Coin coin2({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
@@ -53,19 +51,27 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 }
 
 Map::~Map() {
+	for (int i = 0; i < groundVector.size(); i++) {
+		delete groundVector[i];
+	}
+
+	for (int i = 0; i < enemyVector.size(); i++) {
+		delete enemyVector[i];
+	}
 }
 
 void Map::draw(sf::RenderWindow& window) {
 	window.draw(this->background);
 	this->player->draw(window);
+
 	for (int i = 0; i < groundVector.size(); i++) {
 		groundVector[i]->draw(window);
 	}
-	/*
-	for (int i = 0; i < gombaVector.size(); i++) {
-		gombaVector[i]->draw(window);
+	
+	for (int i = 0; i < enemyVector.size(); i++) {
+		enemyVector[i]->draw(window);
 	}
-
+	/*
 	for (int i = 0; i < coinVector.size(); i++) {
 		coinVector[i]->draw(window);
 	}

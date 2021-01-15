@@ -1,7 +1,0 @@
-enum LoadingCodes
-{
-	LOADING_TEXTURE_CODE,
-	LOADING_FONT_CODE
-};
-
-

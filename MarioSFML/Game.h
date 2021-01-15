@@ -4,18 +4,19 @@
 #include <SFML/Graphics.hpp>
 #include "AssetsManager.h"
 
-
+class View;
 class PauseMenu;
 class Map;
 
 class Game
 {
 public:
-    sf::View view;
+    
     sf::RenderWindow window;
     AssetsManager assets;
     PauseMenu* pauseMenu;
     Map* map;
+    View* view;
 
 public:
 
