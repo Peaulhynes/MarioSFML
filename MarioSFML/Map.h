@@ -10,7 +10,7 @@ class Map
 {
 public:
 	sf::Sprite background;
-	Player *player;
+	Player* player;
 	std::vector<Ground*> groundVector;
 	std::vector<Enemy*> enemyVector;
 	std::vector<Coin*> coinVector;
@@ -23,6 +23,7 @@ public:
 	Map(AssetsManager& assets, sf::RenderWindow& window);
 	~Map();
 	void draw(sf::RenderWindow& window);
+	void readMap(AssetsManager& assets);
 };
 
 #endif // !MAP_H

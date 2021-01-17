@@ -9,24 +9,29 @@
 class Player
 {
 public:
-    Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
-    ~Player() = default;
-    void draw(sf::RenderWindow& window);
-    void move(sf::Vector2f distance);
-    void setPosition(sf::Vector2f position);
-    int getX();
-    int getY();
-    sf::FloatRect getGlobalBounds();
-    bool isCollidingWithCoin(Coin* coin);
-    bool isCollidingWithEnemy(Enemy* enemy);
-    int collidesWithGround(Ground* ground);
-    void inputProcessing(float deltaTime);
+	Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
+	~Player() = default;
+	void draw(sf::RenderWindow& window);
+	void move(sf::Vector2f distance);
+	void jump(sf::Vector2f distance);
+	void setPosition(sf::Vector2f position);
+	int getX();
+	int getY();
+	sf::FloatRect getGlobalBounds();
+	bool isCollidingWithCoin(Coin* coin);
+	bool isCollidingWithEnemy(Enemy* enemy);
+	int collidesWithGround(Ground* ground);
+	void inputProcessing(float deltaTime);
 
 private:
-    sf::RectangleShape player;
-    float size;
-    float moveSpeed;
-    bool isJumping;
+	sf::RectangleShape player;
+	float size;
+	float moveSpeed;
+	bool isJumping;
+	float maxJump;
+	float posY;
+	bool startJumping;
+	float gravity;
 };
 
 #endif
