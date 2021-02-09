@@ -15,12 +15,9 @@ public:
 	void move(sf::Vector2f distance);
 	void jump(sf::Vector2f distance);
 	void setPosition(sf::Vector2f position);
-	int getX();
-	int getY();
+	float getX();
+	float getY();
 	sf::FloatRect getGlobalBounds();
-	bool isCollidingWithCoin(Coin* coin);
-	bool isCollidingWithEnemy(Enemy* enemy);
-	int collidesWithGround(Ground* ground);
 	void inputProcessing(float deltaTime);
 
 private:

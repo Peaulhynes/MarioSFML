@@ -8,14 +8,13 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 	int groundLayers = 3;
 	int blockPerLine = 60;
 
-	this->gravity = 9.81;
+	this->gravity = 9.81f;
 	this->blockSize = 40;
 	this->size = sf::Vector2f{ blockPerLine * blockSize, (float)window.getSize().y };
 
 	float groundY = size.y - groundLayers * blockSize;
 
 	this->background.setTexture(assets.getTRef("background"));
-
 	readMap(assets);
 
 	//this->player = new Player({ 40, 40 }, &assets.getTRef("player"), { 50, groundY });
@@ -53,11 +52,11 @@ Map::~Map() {
 
 	delete player;
 
-	for (int i = 0; i < groundVector.size(); i++) {
+	for (unsigned int i = 0; i < groundVector.size(); i++) {
 		delete groundVector[i];
 	}
 
-	for (int i = 0; i < enemyVector.size(); i++) {
+	for (unsigned int i = 0; i < enemyVector.size(); i++) {
 		delete enemyVector[i];
 	}
 }
@@ -66,15 +65,15 @@ void Map::draw(sf::RenderWindow& window) {
 	window.draw(this->background);
 	this->player->draw(window);
 
-	for (int i = 0; i < groundVector.size(); i++) {
+	for (unsigned int i = 0; i < groundVector.size(); i++) {
 		groundVector[i]->draw(window);
 	}
 
-	for (int i = 0; i < enemyVector.size(); i++) {
+	for (unsigned int i = 0; i < enemyVector.size(); i++) {
 		enemyVector[i]->draw(window);
 	}
 
-	for (int i = 0; i < coinVector.size(); i++) {
+	for (unsigned int i = 0; i < coinVector.size(); i++) {
 		coinVector[i]->draw(window);
 	}
 }

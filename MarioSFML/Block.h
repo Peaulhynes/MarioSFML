@@ -10,8 +10,8 @@ class Block
 public:
 	Block(sf::Vector2f size, sf::Texture *texture, sf::Vector2f position);
 	~Block() = default;
-	int getX();
-	int getY();
+	float getX();
+	float getY();
 	sf::FloatRect getGlobalBounds();
 	void setPosition(sf::Vector2f position);
 	void draw(sf::RenderWindow& window);
