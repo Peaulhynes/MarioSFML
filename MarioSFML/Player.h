@@ -18,17 +18,20 @@ public:
 	float getX();
 	float getY();
 	sf::FloatRect getGlobalBounds();
-	void inputProcessing(float deltaTime);
+   /* bool isCollidingWithCoin(Coin* coin);
+    bool isCollidingWithEnemy(Enemy* enemy);
+    int collidesWithGround(Ground* ground);*/
+    int inputProcessing(float deltaTime);
 
 private:
-	sf::RectangleShape player;
-	float size;
-	float moveSpeed;
-	bool isJumping;
-	float maxJump;
-	float posY;
-	bool startJumping;
-	float gravity;
+    sf::RectangleShape player;
+    float size;
+    float moveSpeed;
+    bool isJumping;
+    float maxJump;
+    float posY;
+    bool startJumping;
+    float gravity;
 };
 
 #endif

@@ -2,8 +2,8 @@
 #include <iostream>
 
 Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
-	player.setSize(size);
-	player.setTexture(texture);
+    player.setSize(size);
+    player.setTexture(texture);
 	player.setPosition(position);
 	this->size = size.y;
 	this->moveSpeed = 200.f;
@@ -15,11 +15,11 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 }
 
 void Player::draw(sf::RenderWindow& window) {
-	window.draw(player);
+    window.draw(player);
 }
 
 void Player::move(sf::Vector2f distance) {
-	player.move(distance);
+    player.move(distance);
 }
 
 void Player::jump(sf::Vector2f distance) {
@@ -31,7 +31,7 @@ void Player::jump(sf::Vector2f distance) {
 	if (isJumping && getY() <= posY - maxJump) {
 		isJumping = false;
 	}
-
+	
 	if (!isJumping && getY() < posY) {
 		player.move(distance * gravity);
 
@@ -46,7 +46,7 @@ void Player::jump(sf::Vector2f distance) {
 }
 
 void Player::setPosition(sf::Vector2f position) {
-	player.setPosition(position);
+    player.setPosition(position);
 }
 
 float Player::getX() {
@@ -61,8 +61,30 @@ sf::FloatRect Player::getGlobalBounds() {
 	return player.getGlobalBounds();
 }
 
-void Player::inputProcessing(float deltaTime) {
+/*bool Player::isCollidingWithCoin(Coin* coin) {
+	return player.getGlobalBounds().intersects(coin->getGlobalBounds());
+}
 
+bool Player::isCollidingWithEnemy(Enemy* enemy) {
+	return player.getGlobalBounds().intersects(enemy->getGlobalBounds());
+}
+
+int Player::collidesWithGround(Ground* ground) {
+	if (player.getGlobalBounds().intersects(ground->getGlobalBounds())) {
+		if (getY() < ground->getY()) {
+			return Directions::UP;
+		}
+		else if (getY() + size > ground->getY()) {
+			return Directions::DOWN;
+		}
+	}
+	else
+		return -1;
+}*/
+
+int Player::inputProcessing(float deltaTime) {
+
+	//float input;
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
@@ -71,21 +93,43 @@ void Player::inputProcessing(float deltaTime) {
 			isJumping = true;
 			startJumping = true;
 		}
-
+		
 		jump({ 0, -moveSpeed * deltaTime });
+
+		//input = 0;
+
+		//RIGHT
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			move({ moveSpeed * deltaTime, 0 });
+			//input = 2;
+		}
+		//LEFT
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+			if (getX() > moveSpeed * deltaTime)
+				move({ -moveSpeed * deltaTime, 0 });
+			//input = 3;
+		}
+
+		return 0;
 	}
 	else {
 		isJumping = false;
 
 		jump({ 0, -moveSpeed * deltaTime });
+
+		
 	}
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		move({ moveSpeed * deltaTime, 0 });
+		return 1;
 	}
 	//LEFT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
 		if (getX() > moveSpeed * deltaTime)
 			move({ -moveSpeed * deltaTime, 0 });
+		return -1;
 	}
+
+	return -2;
 }

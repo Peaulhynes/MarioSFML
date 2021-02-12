@@ -68,8 +68,10 @@ void Game::gameLoop()
 			}
 		}
 
+		int input = -2;
+
 		if (!pauseMenu->getActive())
-			map->player->inputProcessing(deltaTime);
+			input = map->player->inputProcessing(deltaTime);
 
 
 		view->update();
@@ -77,7 +79,7 @@ void Game::gameLoop()
 		window.clear();
 
 		// Stuff affected by the view
-		
+		map->checkCollisions(input);
 		map->draw(window);
 
 		// Stuff not affected by the view
