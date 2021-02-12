@@ -16,7 +16,7 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 	float groundY = size.y - groundLayers * blockSize;
 
 	this->background.setTexture(assets.getTRef("background"));
-	readMap(assets);
+	//readMap(assets);
 
 	//Quadtree quadtree(window.getView().getCenter().x, window.getView().getCenter().y, window.getSize().x / 2);
 	Quadtree quadtree(6000/2, 1600/2, 6000/2);
@@ -184,8 +184,8 @@ void Map::checkCollisions(int input) {
 	}*/
 
 	// collisions basiques
-	/*for (int i = 0; i < enemyVector.size(); i++) {
-		if (this->player->isCollidingWithEnemy(enemyVector[i])) {
+	for (int i = 0; i < enemyVector.size(); i++) {
+		if (this->player->getGlobalBounds().intersects(sf::FloatRect(enemyVector[i]->getGlobalBounds()))) {
 			std::cout << "aie";
 			if (input == 1) {
 				player->setPosition(sf::Vector2f{ (float)enemyVector[i]->getGlobalBounds().left - player->getGlobalBounds().width, (float)player->getY() });
@@ -201,10 +201,10 @@ void Map::checkCollisions(int input) {
 	}
 
 	for (int i = 0; i < coinVector.size(); i++) {
-		if (this->player->isCollidingWithCoin(coinVector[i])) {
+		if (this->player->getGlobalBounds().intersects(sf::FloatRect(coinVector[i]->getGlobalBounds()))) {
 			std::cout << "score";
 		}
-	}*/
+	}
 	
 	//fait ramer le jeu
 	//for (int i = 0; i < groundVector.size(); i++) {
