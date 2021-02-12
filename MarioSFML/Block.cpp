@@ -8,11 +8,11 @@ Block::Block(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	block.setPosition(position);
 }
 
-int Block::getX() {
+float Block::getX() {
 	return block.getPosition().x;
 }
 
-int Block::getY() {
+float Block::getY() {
 	return block.getPosition().y;
 }
 
