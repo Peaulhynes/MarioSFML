@@ -128,7 +128,7 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 		if (ch == '1') {
 			Gomba* enemy = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { blockSize * col, size.y - row * blockSize });
 			enemyVector.push_back(enemy);
-			std::cout << blockSize * col << " X " << size.y - row * blockSize << " Y \n";
+			//std::cout << blockSize * col << " X " << size.y - row * blockSize << " Y " << (blockSize * col) / 2 << " half \n";
 			quadtree.insert(blockSize * col, size.y - row * blockSize);
 			std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);//regarder les valeurs surtout half
 			std::vector<float> temp = std::get<0>(res);
@@ -150,27 +150,35 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 		}
 	}
 
-	std::cout << total << std::endl; // 168 correspond bien � tous les �l�ments de la map (sans 2 ni P ni * car pas encore mis)
+	//std::cout << total << std::endl; // 168 correspond bien � tous les �l�ments de la map (sans 2 ni P ni * car pas encore mis)
 }
 
 void Map::checkCollisions(int input) {
 	
-	//std::cout << player->getX() + player->getGlobalBounds().width / 2 << " x " << player->getY() + player->getGlobalBounds().height / 2 << " y " << player->getGlobalBounds().width << " half \n";
-	//std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() + player->getGlobalBounds().width / 2, player->getY() + player->getGlobalBounds().height / 2, player->getGlobalBounds().width/2);
-	/*std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(920, 520, 200);
-	std::vector<float> temp = std::get<0>(res);
-	if (temp.size() > 0) {
-		std::cout << temp.size() << "\n";
-		float xTemp = temp[0];
-		temp = std::get<1>(res);
-		float yTemp = temp[0];
-		if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp - (blockSize / 2), yTemp - (blockSize / 2), blockSize/2, blockSize/2))) {
-			std::cout << "true \n";
-		}
-		else {
-			std::cout << "false \n";
-		}
-	}*/
+	//std::cout << player->getX() + player->getGlobalBounds().width / 2 << " x " << player->getY() + player->getGlobalBounds().height / 2 << " y " << player->getGlobalBounds().width/2 << " half \n";
+	////std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() + player->getGlobalBounds().width / 2, player->getY() + player->getGlobalBounds().height / 2, player->getGlobalBounds().width/2);
+	//std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(520, 560, 260);
+	//std::vector<float> temp = std::get<0>(res);
+	//if (temp.size() > 0) {
+	//	//std::cout << temp.size() << "\n";
+	//	float xTemp = temp[0];
+	//	temp = std::get<1>(res);
+	//	float yTemp = temp[0];
+	//	if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp - (blockSize / 2), yTemp - (blockSize / 2), blockSize/2, blockSize/2))) {
+	//		//std::cout << "true \n";
+	//		//if player is going right
+	//		if (input == 1) {
+	//			player->setPosition(sf::Vector2f{ xTemp - (blockSize / 2) - player->getGlobalBounds().width, (float)player->getY() });
+	//		}
+	//		//if player is going left
+	//		if (input == -1) {
+	//			player->setPosition(sf::Vector2f{ xTemp + (blockSize / 2), (float)player->getY() });
+	//		}
+	//	}
+	//	else {
+	//		//std::cout << "false \n";
+	//	}
+	//}
 
 	/*std::tuple <std::vector<float>, std::vector<float>> collisions;
 	collisions = quadtree.queryRange(enemyVector[0]->getGlobalBounds().left + (enemyVector[0]->getGlobalBounds().width / 2), enemyVector[0]->getGlobalBounds().top + (enemyVector[0]->getGlobalBounds().height / 2), enemyVector[0]->getGlobalBounds().width / 2);
