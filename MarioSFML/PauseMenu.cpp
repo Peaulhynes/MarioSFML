@@ -1,5 +1,5 @@
 #include "PauseMenu.h"
-#include "Game.h"
+
 
 PauseMenu::PauseMenu(AssetsManager& assets, sf::RenderWindow& window) {
 

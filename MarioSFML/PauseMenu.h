@@ -2,6 +2,7 @@
 #define PAUSEMENU_H
 #include <SFML/Graphics.hpp>
 #include "AssetsManager.h"
+#include "Game.h"
 
 class PauseMenu
 {

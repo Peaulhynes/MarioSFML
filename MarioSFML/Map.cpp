@@ -6,54 +6,23 @@
 
 Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
+	/* A SUPPRIMER A LONG TERME*/
 	int groundLayers = 3;
 	int blockPerLine = 60;
+	float groundY = size.y - groundLayers * blockSize;
 
 	this->gravity = 9.81f;
 	this->blockSize = 40;
-	this->size = sf::Vector2f{ blockPerLine * blockSize, (float)window.getSize().y };
-
-	float groundY = size.y - groundLayers * blockSize;
-
-	this->background.setTexture(assets.getTRef("background"));
-	//readMap(assets);
+	this->size = {(float)window.getSize().x, (float)window.getSize().y };
 
 	//Quadtree quadtree(window.getView().getCenter().x, window.getView().getCenter().y, window.getSize().x / 2);
-	Quadtree quadtree(6000/2, 1600/2, 6000/2);
-	this->quadtree.setXYHalf(quadtree.getX(),quadtree.getY(),quadtree.getHalf());
+	Quadtree quadtree(6000 / 2, 1600 / 2, 6000 / 2);
+	this->quadtree.setXYHalf(quadtree.getX(), quadtree.getY(), quadtree.getHalf());
 	//std::cout << this->quadtree.getX() << "\n";
 
 	readMap(assets, this->quadtree);
 
-	//this->player = new Player({ 40, 40 }, &assets.getTRef("player"), { 50, groundY });
-
-	/*for (int i = 0; i < groundLayers; i++) {
-		for (int j = 0; j < blockPerLine; j++) {
-			Ground* ground = new Ground({ blockSize, blockSize }, &assets.getTRef("ground"), { blockSize * j, size.y - blockSize * i });
-			groundVector.push_back(ground);
-		}
-	}*/
-
-	/*Gomba* enemy1 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { 300, groundY });
-	Gomba* enemy2 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { 500, groundY });
-	Gomba* enemy3 = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { 700, groundY });
-	enemyVector.push_back(enemy1);
-	enemyVector.push_back(enemy2);
-	enemyVector.push_back(enemy3);*/
-
-	//COINS
-	/*
-	std::vector<Coin*> coinVector;
-	Coin coin1({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
-	Coin coin2({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
-	Coin coin3({ BLOCK_SIZE, BLOCK_SIZE }, &cointexture);
-	coinVector.push_back(&coin1);
-	coinVector.push_back(&coin2);
-	coinVector.push_back(&coin3);
-	coin1.setPos({ 200, 520 });
-	coin2.setPos({ 120, 520 });
-	coin3.setPos({ 400, 400 });
-	*/
+	this->size = { nbBlocks.x * blockSize, nbBlocks.y * blockSize };
 }
 
 Map::~Map() {
@@ -70,7 +39,7 @@ Map::~Map() {
 }
 
 void Map::draw(sf::RenderWindow& window) {
-	window.draw(this->background);
+
 	this->player->draw(window);
 
 	for (unsigned int i = 0; i < groundVector.size(); i++) {
@@ -89,6 +58,7 @@ void Map::draw(sf::RenderWindow& window) {
 void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 
 	int row = 0, col = -1;
+	int maxCol = 0;
 	char ch;
 	std::fstream mapFile("assets/maps/map1.txt", std::fstream::in);
 	std::string line;
@@ -101,10 +71,12 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 	mapFile.seekg(0);
 
 	int total = 0;
-	
+	this->nbBlocks.y = row;
 	while (mapFile >> std::noskipws >> ch) {
 		if (ch == '\n') {
 			row--;
+			if (col > maxCol)
+				maxCol = col;
 			col = -1;
 		}
 		else {
@@ -112,7 +84,7 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 		}
 
 		if (ch == 'P') {
-			this->player = new Player({ 40, 40 }, &assets.getTRef("player"), { blockSize * col, size.y - row * blockSize});
+			this->player = new Player({ blockSize, blockSize }, &assets.getTRef("player"), { blockSize * col, size.y - row * blockSize});
 		}
 
 		if (ch == 'G') {
@@ -149,7 +121,7 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 				total++;
 		}
 	}
-
+	this->nbBlocks.x = maxCol;
 	//std::cout << total << std::endl; // 168 correspond bien � tous les �l�ments de la map (sans 2 ni P ni * car pas encore mis)
 }
 
@@ -202,6 +174,9 @@ void Map::checkCollisions(int input) {
 				player->setPosition(sf::Vector2f{ (float)enemyVector[i]->getGlobalBounds().left + enemyVector[i]->getGlobalBounds().width, (float)player->getY() });
 			}
 			if (input == -2) {
+				// supprime l'ennemi si on le touche par le haut
+				delete enemyVector[i];
+				enemyVector.erase(enemyVector.begin() + i);
 				std::cout << "dead";
 			}
 		}
@@ -210,6 +185,12 @@ void Map::checkCollisions(int input) {
 
 	for (int i = 0; i < coinVector.size(); i++) {
 		if (this->player->getGlobalBounds().intersects(sf::FloatRect(coinVector[i]->getGlobalBounds()))) {
+
+			//supprime la pièce si on la touche
+			delete coinVector[i];
+			coinVector.erase(coinVector.begin() + i);
+			this->player->setScore(this->player->getScore() + 1);
+
 			std::cout << "score";
 		}
 	}

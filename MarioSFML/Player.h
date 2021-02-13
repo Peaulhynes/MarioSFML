@@ -15,8 +15,10 @@ public:
 	void move(sf::Vector2f distance);
 	void jump(sf::Vector2f distance);
 	void setPosition(sf::Vector2f position);
+    void setScore(int score);
 	float getX();
 	float getY();
+    int getScore();
 	sf::FloatRect getGlobalBounds();
    /* bool isCollidingWithCoin(Coin* coin);
     bool isCollidingWithEnemy(Enemy* enemy);
@@ -32,6 +34,7 @@ private:
     float posY;
     bool startJumping;
     float gravity;
+    int score;
 };
 
 #endif

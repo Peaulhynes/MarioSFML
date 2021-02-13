@@ -21,6 +21,13 @@ Quadtree::Quadtree(float x, float y, float halfDimension) {
     this->southEast = NULL;
 }
 
+Quadtree::~Quadtree() {
+    delete northWest;
+    delete northEast;
+    delete southWest;
+    delete southEast;
+}
+
 float Quadtree::getX() {
     return x;
 }

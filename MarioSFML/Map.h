@@ -10,7 +10,6 @@
 class Map
 {
 public:
-	sf::Sprite background;
 	Player *player;
 	std::vector<Ground*> groundVector;
 	std::vector<Enemy*> enemyVector;
@@ -21,6 +20,8 @@ public:
 	float gravity;
 	float blockSize;
 	sf::Vector2f size;
+	sf::Vector2f nbBlocks;
+
 
 public:
 	Map(AssetsManager& assets, sf::RenderWindow& window);

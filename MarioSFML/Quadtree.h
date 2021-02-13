@@ -8,6 +8,26 @@
 
 class Quadtree
 {
+
+public:
+    // Methods
+    Quadtree();
+    Quadtree(float x, float y, float halfDimension);
+    ~Quadtree();
+   /* Quadtree operator=(const Quadtree q) {
+        Quadtree res(q.x, q.y, q.halfDimension);
+        return res;
+    }*/
+    bool insert(float x, float y);
+    // create four children that fully divide this quad into four quads of equal area
+    void subdivide();
+    std::tuple <std::vector<float>, std::vector<float>> queryRange(float x, float y, float halfDimension);
+
+    float getX();
+    float getY();
+    float getHalf();
+    void setXYHalf(float x, float y, float half);
+
 private:
     // Arbitrary constant to indicate how many elements can be stored in this quad tree node
     const int QT_NODE_CAPACITY = 4;
@@ -27,24 +47,6 @@ private:
     Quadtree* northEast;
     Quadtree* southWest;
     Quadtree* southEast;
-
-public:
-    // Methods
-    Quadtree();
-    Quadtree(float x, float y, float halfDimension);
-   /* Quadtree operator=(const Quadtree q) {
-        Quadtree res(q.x, q.y, q.halfDimension);
-        return res;
-    }*/
-    bool insert(float x, float y);
-    // create four children that fully divide this quad into four quads of equal area
-    void subdivide();
-    std::tuple <std::vector<float>, std::vector<float>> queryRange(float x, float y, float halfDimension);
-
-    float getX();
-    float getY();
-    float getHalf();
-    void setXYHalf(float x, float y, float half);
 };
 
 #endif // !QUADTREE_H

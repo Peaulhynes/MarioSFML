@@ -12,6 +12,7 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	this->posY = getY();
 	this->startJumping = false;
 	this->gravity = -1.5f;
+	this->score = 0;
 }
 
 void Player::draw(sf::RenderWindow& window) {
@@ -49,12 +50,20 @@ void Player::setPosition(sf::Vector2f position) {
     player.setPosition(position);
 }
 
+void Player::setScore(int score) {
+	this->score = score;
+}
+
 float Player::getX() {
 	return player.getPosition().x;
 }
 
 float Player::getY() {
 	return player.getPosition().y;
+}
+
+int Player::getScore() {
+	return score;
 }
 
 sf::FloatRect Player::getGlobalBounds() {

@@ -1,3 +1,7 @@
+#define _CRTDBG_MAP_ALLOC "../"
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -7,8 +11,10 @@ using namespace std;
 
 int main()
 {
-	Game game;
-	game.gameLoop();
+	Game* game = new Game();
+	game->gameLoop();
+	delete game;
+	_CrtDumpMemoryLeaks();
 
 	return EXIT_SUCCESS;
 }
