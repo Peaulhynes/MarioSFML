@@ -11,9 +11,12 @@ class Map
 {
 public:
 	Player *player;
-	std::vector<Ground*> groundVector;
+	/*std::vector<Ground*> groundVector;
 	std::vector<Enemy*> enemyVector;
-	std::vector<Coin*> coinVector;
+	std::vector<Coin*> coinVector;*/
+	std::map<std::pair<float, float>, Ground*> groundMap;
+	std::map<std::pair<float, float>, Enemy*> enemyMap;
+	std::map<std::pair<float, float>, Coin*> coinMap;
 
 	Quadtree quadtree;
 

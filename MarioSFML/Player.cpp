@@ -13,6 +13,7 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	this->startJumping = false;
 	this->gravity = -1.5f;
 	this->score = 0;
+	this->life = 3;
 }
 
 void Player::draw(sf::RenderWindow& window) {
@@ -71,6 +72,10 @@ sf::FloatRect Player::getGlobalBounds() {
 	return player.getGlobalBounds();
 }
 
+void Player::getDamage() {
+	this->life -= 1;
+}
+
 /*bool Player::isCollidingWithCoin(Coin* coin) {
 	return player.getGlobalBounds().intersects(coin->getGlobalBounds());
 }
@@ -95,11 +100,12 @@ int Player::collidesWithGround(Ground* ground) {
 int Player::inputProcessing(float deltaTime) {
 
 	//float input;
+
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
 		if (!startJumping) {
-			posY = getY();
+			//posY = getY();
 			isJumping = true;
 			startJumping = true;
 		}
@@ -115,7 +121,7 @@ int Player::inputProcessing(float deltaTime) {
 		}
 		//LEFT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			if (getX() > moveSpeed * deltaTime)
+			//if (getX() > moveSpeed * deltaTime)
 				move({ -moveSpeed * deltaTime, 0 });
 			//input = 3;
 		}
@@ -127,8 +133,8 @@ int Player::inputProcessing(float deltaTime) {
 
 		jump({ 0, -moveSpeed * deltaTime });
 
-		
 	}
+
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		move({ moveSpeed * deltaTime, 0 });
@@ -143,3 +149,11 @@ int Player::inputProcessing(float deltaTime) {
 
 	return -2;
 }
+
+void Player::stopJumping() {
+	isJumping = false;
+}
+
+//void Player::setPosY(float posY) {
+//	this->posY = posY;
+//}

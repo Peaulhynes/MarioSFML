@@ -15,8 +15,8 @@ public:
 
     bool insert(float x, float y, std::string type);
     void subdivide();
-    std::tuple <std::vector<float>, std::vector<float>> queryRange(float x, float y, float halfDimensionX, float halfDimensionY);
-    std::vector<std::string> getType(float x, float y, float halfDimensionX, float halfDimensionY);
+    std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> queryRange(float x, float y, float halfDimensionX, float halfDimensionY);
+    void removeItem(float x, float y, float halfDimensionX, float halfDimensionY);
 
     float getX();
     float getY();

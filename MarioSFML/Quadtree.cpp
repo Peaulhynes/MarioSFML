@@ -108,13 +108,14 @@ void Quadtree::subdivide() {
     southEast = new Quadtree((x + (halfDimensionX / 2)), (y + (halfDimensionY / 2)), halfDimensionX / 2, halfDimensionY/2);
 }
 
-std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x, float y, float halfDimensionX, float halfDimensionY) {
+std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> Quadtree::queryRange(float x, float y, float halfDimensionX, float halfDimensionY) {
     // Prepare an array of results
     std::vector<float> pointsInRangeX;
     std::vector<float> pointsInRangeY;
+    std::vector<std::string> type;
     
-    std::tuple <std::vector<float>, std::vector<float>> res;
-    res = std::make_tuple(pointsInRangeX, pointsInRangeY);
+    std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res;
+    res = std::make_tuple(pointsInRangeX, pointsInRangeY, type);
 
    // std::cout << this->x - this->halfDimensionX << " x " << this->y - this->halfDimensionY  << " y "<< std::endl;
   
@@ -131,77 +132,6 @@ std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x
         if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
             pointsInRangeX.push_back(x);
             pointsInRangeY.push_back(y);
-            //std::cout << "adddddddddddddd" << std::endl;
-        }
-    }
-
-
-
-    // Terminate here, if there are no children
-    if (northWest == NULL) {
-        //std::cout << "query no child \n";
-        res = std::make_tuple(pointsInRangeX, pointsInRangeY);
-        // std::cout << std::get<0>(res).size() << "\n";
-        return res;
-    }
-
-
-    // Otherwise, add the points from the children
-    std::tuple <std::vector<float>, std::vector<float>> resNW = northWest->queryRange(x, y, halfDimensionX, halfDimensionY);
-    std::vector<float> temp = std::get<0>(resNW);
-    //std::cout << temp[0] << "\n";
-    if (temp.size() > 0) {
-        pointsInRangeX.push_back(temp[0]);
-        temp = std::get<1>(resNW);
-        pointsInRangeY.push_back(temp[0]);
-    }
-
-    std::tuple <std::vector<float>, std::vector<float>> resNE = northEast->queryRange(x, y, halfDimensionX, halfDimensionY);
-    temp = std::get<0>(resNE);
-    if (temp.size() > 0) {
-        pointsInRangeX.push_back(temp[0]);
-        temp = std::get<1>(resNE);
-        pointsInRangeY.push_back(temp[0]);
-    }
-
-    std::tuple <std::vector<float>, std::vector<float>> resSW = southWest->queryRange(x, y, halfDimensionX,halfDimensionY);
-    temp = std::get<0>(resSW);
-    if (temp.size() > 0) {
-        pointsInRangeX.push_back(temp[0]);
-        temp = std::get<1>(resSW);
-        pointsInRangeY.push_back(temp[0]);
-    }
-
-    std::tuple <std::vector<float>, std::vector<float>> resSE = southEast->queryRange(x, y, halfDimensionX, halfDimensionY);
-    temp = std::get<0>(resSE);
-    if (temp.size() > 0) {
-        pointsInRangeX.push_back(temp[0]);
-        temp = std::get<1>(resSE);
-        pointsInRangeY.push_back(temp[0]);
-    }
-
-    //std::tuple <std::vector<float>, std::vector<float>> resTemp = std::make_tuple(pointsInRangeX, pointsInRangeY);
-    //res = std::make_tuple(res, resTemp);
-    res = std::make_tuple(pointsInRangeX, pointsInRangeY);
-    //std::cout << "query added \n";
-    return res;
-}
-
-std::vector<std::string> Quadtree::getType(float x, float y, float halfDimensionX, float halfDimensionY) {
-
-    std::vector<std::string> type;
-
-     // Automatically abort if the range does not intersect this quad
-    if (!(x >= this->x - this->halfDimensionX && x <= this->x + this->halfDimensionX && y >= this->y - this->halfDimensionY && y <= this->y + this->halfDimensionY)) {
-        //std::cout << "query empty \n";
-        return type; // empty list
-    }
-    //std::cout << pointsX.size() << "\n";
-    // Check objects at this quad level
-    for (int p = 0; p < pointsX.size(); p++)
-    {
-        //std::cout << pointsX[p] << std::endl;
-        if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
             type.push_back(this->type[p]);
             //std::cout << "adddddddddddddd" << std::endl;
         }
@@ -212,39 +142,93 @@ std::vector<std::string> Quadtree::getType(float x, float y, float halfDimension
     // Terminate here, if there are no children
     if (northWest == NULL) {
         //std::cout << "query no child \n";
+        res = std::make_tuple(pointsInRangeX, pointsInRangeY,type);
         // std::cout << std::get<0>(res).size() << "\n";
-        return type;
+        return res;
     }
 
 
     // Otherwise, add the points from the children
-    std::vector<std::string> resNW = northWest->getType(x, y, halfDimensionX, halfDimensionY);
+    std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> resNW = northWest->queryRange(x, y, halfDimensionX, halfDimensionY);
+    std::vector<float> temp = std::get<0>(resNW);
     //std::cout << temp[0] << "\n";
-    if (resNW.size() > 0) {
-        for (auto t : resNW)
-            type.push_back(t);
+    if (temp.size() > 0) {
+        pointsInRangeX.push_back(temp[0]);
+        temp = std::get<1>(resNW);
+        pointsInRangeY.push_back(temp[0]);
+        std::vector<std::string> temp = std::get<2>(resNW);
+        type.push_back(temp[0]);
     }
 
-    std::vector<std::string> resNE = northEast->getType(x, y, halfDimensionX, halfDimensionY);
-    if (resNE.size() > 0) {
-        for (auto t : resNE)
-            type.push_back(t);
+    std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> resNE = northEast->queryRange(x, y, halfDimensionX, halfDimensionY);
+    temp = std::get<0>(resNE);
+    if (temp.size() > 0) {
+        pointsInRangeX.push_back(temp[0]);
+        temp = std::get<1>(resNE);
+        pointsInRangeY.push_back(temp[0]);
+        std::vector<std::string> temp = std::get<2>(resNE);
+        type.push_back(temp[0]);
     }
 
-    std::vector<std::string> resSW = southWest->getType(x, y, halfDimensionX, halfDimensionY);
-    if (resSW.size() > 0) {
-        for (auto t : resSW)
-            type.push_back(t);
+    std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> resSW = southWest->queryRange(x, y, halfDimensionX,halfDimensionY);
+    temp = std::get<0>(resSW);
+    if (temp.size() > 0) {
+        pointsInRangeX.push_back(temp[0]);
+        temp = std::get<1>(resSW);
+        pointsInRangeY.push_back(temp[0]);
+        std::vector<std::string> temp = std::get<2>(resSW);
+        type.push_back(temp[0]);
     }
 
-    std::vector<std::string> resSE = southEast->getType(x, y, halfDimensionX, halfDimensionY);
-    if (resSE.size() > 0) {
-        for (auto t : resSE)
-            type.push_back(t);
+    std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> resSE = southEast->queryRange(x, y, halfDimensionX, halfDimensionY);
+    temp = std::get<0>(resSE);
+    if (temp.size() > 0) {
+        pointsInRangeX.push_back(temp[0]);
+        temp = std::get<1>(resSE);
+        pointsInRangeY.push_back(temp[0]);
+        std::vector<std::string> temp = std::get<2>(resSE);
+        type.push_back(temp[0]);
     }
 
     //std::tuple <std::vector<float>, std::vector<float>> resTemp = std::make_tuple(pointsInRangeX, pointsInRangeY);
     //res = std::make_tuple(res, resTemp);
+    res = std::make_tuple(pointsInRangeX, pointsInRangeY, type);
     //std::cout << "query added \n";
-    return type;
+    return res;
+}
+
+void Quadtree::removeItem(float x, float y, float halfDimensionX, float halfDimensionY) {
+
+     // Automatically abort if the range does not intersect this quad
+    if (!(x >= this->x - this->halfDimensionX && x <= this->x + this->halfDimensionX && y >= this->y - this->halfDimensionY && y <= this->y + this->halfDimensionY)) {
+        return; // empty
+    }
+
+    // Check objects at this quad level
+      for (int p = 0; p < pointsX.size(); p++)
+    {
+        if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
+            pointsX.erase(pointsX.begin() + p);
+            pointsY.erase(pointsY.begin() + p);
+            type.erase(type.begin() + p);
+        }
+    }
+
+
+
+    // Terminate here, if there are no children
+    if (northWest == NULL) {
+        return;
+    }
+
+
+    // Otherwise, remove the points from the children
+    northWest->removeItem(x, y, halfDimensionX, halfDimensionY);
+
+    northEast->removeItem(x, y, halfDimensionX, halfDimensionY);
+
+    southWest->removeItem(x, y, halfDimensionX, halfDimensionY);
+
+    southEast->removeItem(x, y, halfDimensionX, halfDimensionY);
+
 }

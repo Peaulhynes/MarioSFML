@@ -24,6 +24,9 @@ public:
     bool isCollidingWithEnemy(Enemy* enemy);
     int collidesWithGround(Ground* ground);*/
     int inputProcessing(float deltaTime);
+    void getDamage();
+    void stopJumping();
+    //void setPosY(float posY);
 
 private:
     sf::RectangleShape player;
@@ -35,6 +38,7 @@ private:
     bool startJumping;
     float gravity;
     int score;
+    int life;
 };
 
 #endif
