@@ -16,8 +16,8 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 	this->size = {(float)window.getSize().x, (float)window.getSize().y };
 
 	//Quadtree quadtree(window.getView().getCenter().x, window.getView().getCenter().y, window.getSize().x / 2);
-	Quadtree quadtree(6000 / 2, 1600 / 2, 6000 / 2);
-	this->quadtree.setXYHalf(quadtree.getX(), quadtree.getY(), quadtree.getHalf());
+	Quadtree quadtree(6000/2, 1600/2, 6000 / 2,1600/2);
+	this->quadtree.setXYHalf(quadtree.getX(), quadtree.getY(), quadtree.getHalfX(), quadtree.getHalfY());
 	//std::cout << this->quadtree.getX() << "\n";
 
 	readMap(assets, this->quadtree);
@@ -90,22 +90,22 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 		if (ch == 'G') {
 			Ground* ground = new Ground({ blockSize, blockSize }, &assets.getTRef("ground"), { blockSize * col, size.y - row * blockSize });
 			groundVector.push_back(ground);
-			quadtree.insert(blockSize * col, size.y - row * blockSize);
-			std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);
+			quadtree.insert(blockSize * col, size.y - row * blockSize,"ground");
+			/*std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);
 			std::vector<float> temp = std::get<0>(res);
 			if (temp.size() > 0)
-				total++;
+				total++;*/
 		}
 
 		if (ch == '1') {
 			Gomba* enemy = new Gomba({ blockSize, blockSize }, &assets.getTRef("gomba"), { blockSize * col, size.y - row * blockSize });
 			enemyVector.push_back(enemy);
 			//std::cout << blockSize * col << " X " << size.y - row * blockSize << " Y " << (blockSize * col) / 2 << " half \n";
-			quadtree.insert(blockSize * col, size.y - row * blockSize);
-			std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);//regarder les valeurs surtout half
-			std::vector<float> temp = std::get<0>(res);
-			if(temp.size() > 0)
-				total++;
+			quadtree.insert(blockSize * col, size.y - row * blockSize,"enemy");
+			//std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);//regarder les valeurs surtout half
+			//std::vector<float> temp = std::get<0>(res);
+			//if(temp.size() > 0)
+			//	total++;
 			//std::vector<float> pointsX = quadtree.getPointsX();
 			//std::cout << pointsX.size() << "\n";
 			//std::cout << quadtree.getX() << " X \n";
@@ -114,11 +114,11 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 		if (ch == 'o') {
 			Coin* coin = new Coin({ blockSize, blockSize }, &assets.getTRef("coin"), { blockSize * col, size.y - row * blockSize });
 			coinVector.push_back(coin); 
-			quadtree.insert(blockSize * col, size.y - row * blockSize);
-			std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);
+			quadtree.insert(blockSize * col, size.y - row * blockSize,"coin");
+			/*std::tuple <std::vector<float>, std::vector<float>> res = quadtree.queryRange(blockSize * col, size.y - row * blockSize, (blockSize * col) / 2);
 			std::vector<float> temp = std::get<0>(res);
 			if (temp.size() > 0)
-				total++;
+				total++;*/
 		}
 	}
 	this->nbBlocks.x = maxCol;
@@ -126,26 +126,129 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 }
 
 void Map::checkCollisions(int input) {
-	
-	//std::cout << player->getX() + player->getGlobalBounds().width / 2 << " x " << player->getY() + player->getGlobalBounds().height / 2 << " y " << player->getGlobalBounds().width/2 << " half \n";
-	////std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() + player->getGlobalBounds().width / 2, player->getY() + player->getGlobalBounds().height / 2, player->getGlobalBounds().width/2);
-	//std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(520, 560, 260);
+
+	// player goes right
+	if (input == 1) {
+		std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() + (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<std::string> type = this->quadtree.getType(player->getX() + (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<float> temp = std::get<0>(res);
+		if (temp.size() > 0) {
+			float xTemp = temp[0];
+			temp = std::get<1>(res);
+			float yTemp = temp[0];
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0]=="enemy") {
+				player->setPosition(sf::Vector2f{ xTemp - player->getGlobalBounds().width, player->getY() });
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "coin") {
+				//remove coin from quadtree and vector
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "ground") {
+				//put the player position to top ground position?
+			}
+		}
+	}
+
+	//player goes left
+	if (input == -1) {
+		std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() - (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<std::string> type = this->quadtree.getType(player->getX() - (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<float> temp = std::get<0>(res);
+		if (temp.size() > 0) {
+			float xTemp = temp[0];
+			temp = std::get<1>(res);
+			float yTemp = temp[0];
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "enemy") {
+				player->setPosition(sf::Vector2f{ xTemp + player->getGlobalBounds().width , player->getY() });
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "coin") {
+				//remove coin from quadtree and vector
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "ground") {
+				//put the player position to top ground position?
+			}
+		}
+	}
+
+	// player fall
+	if (input == -2) {
+		std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX(), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<std::string> type = this->quadtree.getType(player->getX(), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<float> temp = std::get<0>(res);
+		if (temp.size() > 0) {
+			float xTemp = temp[0];
+			temp = std::get<1>(res);
+			float yTemp = temp[0];
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "enemy") {
+				//player->setPosition(sf::Vector2f{ player->getX() , yTemp - (player->getGlobalBounds().height/2) });
+				//remove enemy from quadtree and vector enemy (so draw)
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "coin") {
+				//remove coin from quadtree and vector 
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "ground") {
+				//put the player position to top ground position?
+			}
+		}
+	}
+
+	// player jump
+	if (input == 0) {
+		std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX(), player->getY() - (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<std::string> type = this->quadtree.getType(player->getX(), player->getY() - (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+		std::vector<float> temp = std::get<0>(res);
+		if (temp.size() > 0) {
+			float xTemp = temp[0];
+			temp = std::get<1>(res);
+			float yTemp = temp[0];
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "enemy") {
+				//hurt the player and stop the jump
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "coin") {
+				//remove coin from quadtree and vector 
+			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2)) && type[0] == "ground") {
+				//stop the jump
+			}
+		}
+	}
+
+	//std::cout << player->getX() - blockSize << " X " << (player->getX() - blockSize) / 2 << " half \n";
+
+	//std::cout << player->getX() + player->getGlobalBounds().width << " x " << player->getY()+player->getGlobalBounds().height << " y " << player->getGlobalBounds().width / 2 << " halfX " << player->getGlobalBounds().height / 2 << " halfY \n";
+	//std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() + player->getGlobalBounds().width / 2, player->getY() + player->getGlobalBounds().height / 2, player->getGlobalBounds().width/2);
+	//std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(player->getX() + (player->getGlobalBounds().width/2), player->getY() + (player->getGlobalBounds().height/2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height /2);
+	////std::tuple <std::vector<float>, std::vector<float>> res = this->quadtree.queryRange(480, 740, 20,20);
 	//std::vector<float> temp = std::get<0>(res);
 	//if (temp.size() > 0) {
-	//	//std::cout << temp.size() << "\n";
+	//	std::cout << temp[0] << "\n";
 	//	float xTemp = temp[0];
 	//	temp = std::get<1>(res);
 	//	float yTemp = temp[0];
-	//	if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp - (blockSize / 2), yTemp - (blockSize / 2), blockSize/2, blockSize/2))) {
+	//	//std::cout << player->getX() << " X " << player->getY() << " Y \n";
+	//	//std::cout << xTemp << " X " << yTemp << " Y \n";
+	//	if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, xTemp / 2, yTemp / 2))) {
 	//		//std::cout << "true \n";
 	//		//if player is going right
 	//		if (input == 1) {
-	//			player->setPosition(sf::Vector2f{ xTemp - (blockSize / 2) - player->getGlobalBounds().width, (float)player->getY() });
+	//			player->setPosition(sf::Vector2f{ xTemp - player->getGlobalBounds().width, player->getY() });
+	//			//isColliding = "right";
 	//		}
 	//		//if player is going left
 	//		if (input == -1) {
-	//			player->setPosition(sf::Vector2f{ xTemp + (blockSize / 2), (float)player->getY() });
+	//			player->setPosition(sf::Vector2f{ xTemp + player->getGlobalBounds().width , player->getY() });
+	//			//isColliding = "left";
 	//		}
+	//		if (input == -2) {
+	//			// supprime l'ennemi si on le touche par le haut
+	//			//delete enemyVector[i];
+	//			//enemyVector.erase(enemyVector.begin() + i);
+	//			std::cout << "dead";
+	//		}
+	//		//if is colliding right but is going left
+	//		/*if (input == -1 && isColliding == "right") {
+	//			player->setPosition(sf::Vector2f{ player->getX() - 20, player->getY() });
+	//			isColliding = "false";
+	//		}*/
 	//	}
 	//	else {
 	//		//std::cout << "false \n";
@@ -154,7 +257,7 @@ void Map::checkCollisions(int input) {
 
 	/*std::tuple <std::vector<float>, std::vector<float>> collisions;
 	collisions = quadtree.queryRange(enemyVector[0]->getGlobalBounds().left + (enemyVector[0]->getGlobalBounds().width / 2), enemyVector[0]->getGlobalBounds().top + (enemyVector[0]->getGlobalBounds().height / 2), enemyVector[0]->getGlobalBounds().width / 2);
-	
+
 	std::vector<float> temp = std::get<0>(collisions);
 	std::cout << temp.size() << "\n";*/
 
@@ -164,38 +267,38 @@ void Map::checkCollisions(int input) {
 	}*/
 
 	// collisions basiques
-	for (int i = 0; i < enemyVector.size(); i++) {
-		if (this->player->getGlobalBounds().intersects(sf::FloatRect(enemyVector[i]->getGlobalBounds()))) {
-			std::cout << "aie";
-			if (input == 1) {
-				player->setPosition(sf::Vector2f{ (float)enemyVector[i]->getGlobalBounds().left - player->getGlobalBounds().width, (float)player->getY() });
-			}
-			if (input == -1) {
-				player->setPosition(sf::Vector2f{ (float)enemyVector[i]->getGlobalBounds().left + enemyVector[i]->getGlobalBounds().width, (float)player->getY() });
-			}
-			if (input == -2) {
-				// supprime l'ennemi si on le touche par le haut
-				delete enemyVector[i];
-				enemyVector.erase(enemyVector.begin() + i);
-				std::cout << "dead";
-			}
-		}
-		
-	}
+	//for (int i = 0; i < enemyVector.size(); i++) {
+	//	if (this->player->getGlobalBounds().intersects(sf::FloatRect(enemyVector[i]->getGlobalBounds()))) {
+	//		std::cout << "aie";
+	//		if (input == 1) {
+	//			player->setPosition(sf::Vector2f{ (float)enemyVector[i]->getGlobalBounds().left - player->getGlobalBounds().width, (float)player->getY() });
+	//		}
+	//		if (input == -1) {
+	//			player->setPosition(sf::Vector2f{ (float)enemyVector[i]->getGlobalBounds().left + enemyVector[i]->getGlobalBounds().width, (float)player->getY() });
+	//		}
+	//		if (input == -2) {
+	//			// supprime l'ennemi si on le touche par le haut
+	//			delete enemyVector[i];
+	//			enemyVector.erase(enemyVector.begin() + i);
+	//			std::cout << "dead";
+	//		}
+	//	}
+	//	
+	//}
 
-	for (int i = 0; i < coinVector.size(); i++) {
-		if (this->player->getGlobalBounds().intersects(sf::FloatRect(coinVector[i]->getGlobalBounds()))) {
+	//for (int i = 0; i < coinVector.size(); i++) {
+	//	if (this->player->getGlobalBounds().intersects(sf::FloatRect(coinVector[i]->getGlobalBounds()))) {
 
-			//supprime la pièce si on la touche
-			delete coinVector[i];
-			coinVector.erase(coinVector.begin() + i);
-			this->player->setScore(this->player->getScore() + 1);
+	//		//supprime la pièce si on la touche
+	//		delete coinVector[i];
+	//		coinVector.erase(coinVector.begin() + i);
+	//		this->player->setScore(this->player->getScore() + 1);
 
-			std::cout << "score";
-		}
-	}
+	//		std::cout << "score";
+	//	}
+	//}
 	
-	//fait ramer le jeu
+	//peut faire ramer le jeu
 	//for (int i = 0; i < groundVector.size(); i++) {
 	//	if (this->player->collidesWithGround(groundVector[i])) {
 	//		//std::cout << "ground";

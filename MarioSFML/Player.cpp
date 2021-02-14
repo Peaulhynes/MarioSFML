@@ -25,22 +25,23 @@ void Player::move(sf::Vector2f distance) {
 
 void Player::jump(sf::Vector2f distance) {
 
+	//up
 	if (isJumping && getY() > posY - maxJump) {
 		player.move(distance * -gravity);
 	}
-
+	//need to go down because maxJump reached
 	if (isJumping && getY() <= posY - maxJump) {
 		isJumping = false;
 	}
-	
+	//down
 	if (!isJumping && getY() < posY) {
 		player.move(distance * gravity);
-
+		//put the player on the ground (without it the player is a bit in the ground)
 		if (getY() > posY) {
 			setPosition({ (float)getX(),posY });
 		}
 	}
-
+	//allow jump
 	if (!isJumping && getY() == posY) {
 		startJumping = false;
 	}

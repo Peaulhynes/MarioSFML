@@ -1,9 +1,11 @@
 #include "Quadtree.h"
+#include <iostream>
 
 Quadtree::Quadtree() {
     this->x = 0.f;
     this->y = 0.f;
-    this->halfDimension = 0.f;
+    this->halfDimensionX = 0.f;
+    this->halfDimensionY = 0.f;
     this->northWest = NULL;
     this->northEast = NULL;
     this->southWest = NULL;
@@ -11,10 +13,11 @@ Quadtree::Quadtree() {
 
 }
 
-Quadtree::Quadtree(float x, float y, float halfDimension) {
+Quadtree::Quadtree(float x, float y, float halfDimensionX, float halfDimensionY) {
     this->x = x;
     this->y = y;
-    this->halfDimension = halfDimension;
+    this->halfDimensionX = halfDimensionX;
+    this->halfDimensionY = halfDimensionY;
     this->northWest = NULL;
     this->northEast = NULL;
     this->southWest = NULL;
@@ -34,19 +37,23 @@ float Quadtree::getX() {
 float Quadtree::getY() {
     return y;
 }
-float Quadtree::getHalf() {
-    return halfDimension;
+float Quadtree::getHalfX() {
+    return halfDimensionX;
 }
-void Quadtree::setXYHalf(float x, float y, float half) {
+float Quadtree::getHalfY() {
+    return halfDimensionY;
+}
+void Quadtree::setXYHalf(float x, float y, float halfX, float halfY) {
     this->x = x;
     this->y = y;
-    this->halfDimension = half;
+    this->halfDimensionX = halfX;
+    this->halfDimensionY = halfY;
 }
 
-bool Quadtree::insert(float x, float y) {
+bool Quadtree::insert(float x, float y, std::string type) {
 
     // Ignore objects that do not belong in this quad tree
-    if (!(x >= this->x - this->halfDimension && x <= this->x + this->halfDimension && y >= this->y - this->y / 2 && y <= this->y + this->y / 2)) {
+    if (!(x >= this->x - this->halfDimensionX && x <= this->x + this->halfDimensionX && y >= this->y - this->halfDimensionY && y <= this->y + this->halfDimensionY)) {
         //std::cout << "insert not in \n";
         return false; // object cannot be added
     }
@@ -56,6 +63,7 @@ bool Quadtree::insert(float x, float y) {
         //std::cout << "insert add \n";
         pointsX.push_back(x);
         pointsY.push_back(y);
+        this->type.push_back(type);
         return true;
     }
 
@@ -69,19 +77,19 @@ bool Quadtree::insert(float x, float y) {
     //We have to add the points/data contained into this quad array to the new quads if we only want 
     //the last node to hold the data 
 
-    if (northWest->insert(x, y)) {
+    if (northWest->insert(x, y, type)) {
         //std::cout << "insert nw \n"; 
         return true;
     }
-    if (northEast->insert(x, y)) {
+    if (northEast->insert(x, y, type)) {
         //std::cout << "insert ne \n"; 
         return true;
     }
-    if (southWest->insert(x, y)) {
+    if (southWest->insert(x, y, type)) {
         //std::cout << "insert sw \n"; 
         return true;
     }
-    if (southEast->insert(x, y)) {
+    if (southEast->insert(x, y,type)) {
         //std::cout << "insert se \n"; 
         return true;
     }
@@ -94,33 +102,36 @@ bool Quadtree::insert(float x, float y) {
 
 void Quadtree::subdivide() {
     //std::cout << (x - (halfDimension / 2)) << " x " << (y + (y / 2)) << " y " << halfDimension / 2 << " \n";
-    northWest = new Quadtree((x - (halfDimension / 2)), (y - (y / 2)), halfDimension / 2);
-    northEast = new Quadtree((x + (halfDimension / 2)), (y - (y / 2)), halfDimension / 2);
-    southWest = new Quadtree((x - (halfDimension / 2)), (y + (y / 2)), halfDimension / 2);
-    southEast = new Quadtree((x + (halfDimension / 2)), (y + (y / 2)), halfDimension / 2);
+    northWest = new Quadtree((x - (halfDimensionX / 2)), (y - (halfDimensionY / 2)), halfDimensionX / 2, halfDimensionY/2);
+    northEast = new Quadtree((x + (halfDimensionX / 2)), (y - (halfDimensionY / 2)), halfDimensionX / 2, halfDimensionY/2);
+    southWest = new Quadtree((x - (halfDimensionX / 2)), (y + (halfDimensionY / 2)), halfDimensionX / 2, halfDimensionY/2);
+    southEast = new Quadtree((x + (halfDimensionX / 2)), (y + (halfDimensionY / 2)), halfDimensionX / 2, halfDimensionY/2);
 }
 
-std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x, float y, float halfDimension) {
+std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x, float y, float halfDimensionX, float halfDimensionY) {
     // Prepare an array of results
     std::vector<float> pointsInRangeX;
     std::vector<float> pointsInRangeY;
-
+    
     std::tuple <std::vector<float>, std::vector<float>> res;
     res = std::make_tuple(pointsInRangeX, pointsInRangeY);
 
+   // std::cout << this->x - this->halfDimensionX << " x " << this->y - this->halfDimensionY  << " y "<< std::endl;
+  
     // Automatically abort if the range does not intersect this quad
-    if (!(x >= this->x - this->halfDimension && x <= this->x + this->halfDimension && y >= this->y - this->y / 2 && y <= this->y + this->y / 2)) {
+    if (!(x >= this->x - this->halfDimensionX && x <= this->x + this->halfDimensionX && y >= this->y - this->halfDimensionY && y <= this->y + this->halfDimensionY)) {
         //std::cout << "query empty \n";
         return res; // empty list
     }
-
+    //std::cout << pointsX.size() << "\n";
     // Check objects at this quad level
     for (int p = 0; p < pointsX.size(); p++)
     {
-        if ((pointsX[p] >= this->x - this->halfDimension && pointsX[p] <= this->x + this->halfDimension && pointsY[p] >= this->y - this->y / 2 && pointsY[p] <= this->y + this->y / 2)) {
-            //std::cout << "query in \n";
+        //std::cout << pointsX[p] << std::endl;
+        if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
             pointsInRangeX.push_back(x);
             pointsInRangeY.push_back(y);
+            //std::cout << "adddddddddddddd" << std::endl;
         }
     }
 
@@ -130,12 +141,13 @@ std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x
     if (northWest == NULL) {
         //std::cout << "query no child \n";
         res = std::make_tuple(pointsInRangeX, pointsInRangeY);
+        // std::cout << std::get<0>(res).size() << "\n";
         return res;
     }
 
 
     // Otherwise, add the points from the children
-    std::tuple <std::vector<float>, std::vector<float>> resNW = northWest->queryRange(x, y, halfDimension);
+    std::tuple <std::vector<float>, std::vector<float>> resNW = northWest->queryRange(x, y, halfDimensionX, halfDimensionY);
     std::vector<float> temp = std::get<0>(resNW);
     //std::cout << temp[0] << "\n";
     if (temp.size() > 0) {
@@ -144,7 +156,7 @@ std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x
         pointsInRangeY.push_back(temp[0]);
     }
 
-    std::tuple <std::vector<float>, std::vector<float>> resNE = northEast->queryRange(x, y, halfDimension);
+    std::tuple <std::vector<float>, std::vector<float>> resNE = northEast->queryRange(x, y, halfDimensionX, halfDimensionY);
     temp = std::get<0>(resNE);
     if (temp.size() > 0) {
         pointsInRangeX.push_back(temp[0]);
@@ -152,7 +164,7 @@ std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x
         pointsInRangeY.push_back(temp[0]);
     }
 
-    std::tuple <std::vector<float>, std::vector<float>> resSW = southWest->queryRange(x, y, halfDimension);
+    std::tuple <std::vector<float>, std::vector<float>> resSW = southWest->queryRange(x, y, halfDimensionX,halfDimensionY);
     temp = std::get<0>(resSW);
     if (temp.size() > 0) {
         pointsInRangeX.push_back(temp[0]);
@@ -160,7 +172,7 @@ std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x
         pointsInRangeY.push_back(temp[0]);
     }
 
-    std::tuple <std::vector<float>, std::vector<float>> resSE = southEast->queryRange(x, y, halfDimension);
+    std::tuple <std::vector<float>, std::vector<float>> resSE = southEast->queryRange(x, y, halfDimensionX, halfDimensionY);
     temp = std::get<0>(resSE);
     if (temp.size() > 0) {
         pointsInRangeX.push_back(temp[0]);
@@ -173,4 +185,66 @@ std::tuple <std::vector<float>, std::vector<float>> Quadtree::queryRange(float x
     res = std::make_tuple(pointsInRangeX, pointsInRangeY);
     //std::cout << "query added \n";
     return res;
+}
+
+std::vector<std::string> Quadtree::getType(float x, float y, float halfDimensionX, float halfDimensionY) {
+
+    std::vector<std::string> type;
+
+     // Automatically abort if the range does not intersect this quad
+    if (!(x >= this->x - this->halfDimensionX && x <= this->x + this->halfDimensionX && y >= this->y - this->halfDimensionY && y <= this->y + this->halfDimensionY)) {
+        //std::cout << "query empty \n";
+        return type; // empty list
+    }
+    //std::cout << pointsX.size() << "\n";
+    // Check objects at this quad level
+    for (int p = 0; p < pointsX.size(); p++)
+    {
+        //std::cout << pointsX[p] << std::endl;
+        if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
+            type.push_back(this->type[p]);
+            //std::cout << "adddddddddddddd" << std::endl;
+        }
+    }
+
+
+
+    // Terminate here, if there are no children
+    if (northWest == NULL) {
+        //std::cout << "query no child \n";
+        // std::cout << std::get<0>(res).size() << "\n";
+        return type;
+    }
+
+
+    // Otherwise, add the points from the children
+    std::vector<std::string> resNW = northWest->getType(x, y, halfDimensionX, halfDimensionY);
+    //std::cout << temp[0] << "\n";
+    if (resNW.size() > 0) {
+        for (auto t : resNW)
+            type.push_back(t);
+    }
+
+    std::vector<std::string> resNE = northEast->getType(x, y, halfDimensionX, halfDimensionY);
+    if (resNE.size() > 0) {
+        for (auto t : resNE)
+            type.push_back(t);
+    }
+
+    std::vector<std::string> resSW = southWest->getType(x, y, halfDimensionX, halfDimensionY);
+    if (resSW.size() > 0) {
+        for (auto t : resSW)
+            type.push_back(t);
+    }
+
+    std::vector<std::string> resSE = southEast->getType(x, y, halfDimensionX, halfDimensionY);
+    if (resSE.size() > 0) {
+        for (auto t : resSE)
+            type.push_back(t);
+    }
+
+    //std::tuple <std::vector<float>, std::vector<float>> resTemp = std::make_tuple(pointsInRangeX, pointsInRangeY);
+    //res = std::make_tuple(res, resTemp);
+    //std::cout << "query added \n";
+    return type;
 }
