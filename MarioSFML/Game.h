@@ -6,6 +6,7 @@
 
 class View;
 class PauseMenu;
+class GameOverMenu;
 class Map;
 class GUI;
 
@@ -16,6 +17,7 @@ public:
     sf::RenderWindow window;
     AssetsManager assets;
     PauseMenu* pauseMenu;
+    GameOverMenu* gameOverMenu;
     GUI* gameUi;
     Map* map;
 

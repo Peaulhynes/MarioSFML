@@ -1,5 +1,5 @@
 #include "Player.h"
-#include <iostream>
+#include <algorithm>
 
 Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
     player.setSize(size);
@@ -10,6 +10,7 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	this->isJumping = false;
 	this->maxJump = 200.f;
 	this->posY = getY();
+	this->basePosY = getY();
 	this->startJumping = false;
 	this->gravity = -1.5f;
 	this->score = 0;
@@ -45,6 +46,7 @@ void Player::jump(sf::Vector2f distance) {
 	//allow jump
 	if (!isJumping && getY() == posY) {
 		startJumping = false;
+		posY = basePosY;
 	}
 }
 
@@ -77,9 +79,12 @@ sf::FloatRect Player::getGlobalBounds() {
 }
 
 void Player::damage() {
-	this->life -= 1;
+	this->life = std::max(this->life - 1, 0);
 }
 
+int Player::getLife() {
+	return this->life;
+}
 int Player::inputProcessing(float deltaTime) {
 
 	//float input;
@@ -88,7 +93,7 @@ int Player::inputProcessing(float deltaTime) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 
 		if (!startJumping) {
-			//posY = getY();
+			posY = getY(); 
 			isJumping = true;
 			startJumping = true;
 		}
@@ -137,6 +142,14 @@ void Player::stopJumping() {
 	isJumping = false;
 }
 
-//void Player::setPosY(float posY) {
-//	this->posY = posY;
-//}
+void Player::setPosY(float posY) {
+	this->posY = posY;
+}
+
+void Player::setStartJumping() {
+	this->startJumping = false;
+}
+
+void Player::setBaseY() {
+	this->posY = basePosY;;
+}

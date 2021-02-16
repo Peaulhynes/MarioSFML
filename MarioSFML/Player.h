@@ -37,8 +37,7 @@ public:
 
     /* Get player score. */
     int getScore();
-
-    /* Get player collision box. */
+    int getLife();
 	sf::FloatRect getGlobalBounds();
 
     /* Process user input in game. */
@@ -49,6 +48,9 @@ public:
 
     /* End player jumping. */
     void stopJumping();
+    void setPosY(float posY);
+    void setStartJumping();
+    void setBaseY();
 
 private:
     sf::RectangleShape player;
@@ -57,6 +59,7 @@ private:
     bool isJumping;
     float maxJump;
     float posY;
+    float basePosY;
     bool startJumping;
     float gravity;
     int score;

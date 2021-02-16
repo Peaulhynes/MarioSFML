@@ -22,6 +22,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameOverMenu.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameOverMenu.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="PauseMenu.h" />

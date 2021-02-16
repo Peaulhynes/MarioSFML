@@ -19,6 +19,7 @@ public:
 private:
 	Map *map;
 	sf::Text scoreText;
+	sf::Text lifeText;
 };
 
 #endif

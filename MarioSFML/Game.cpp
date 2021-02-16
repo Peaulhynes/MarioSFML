@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "PauseMenu.h"
+#include "GameOverMenu.h"
 #include "Map.h"
 #include "GUI.h"
 
@@ -20,6 +21,7 @@ Game::Game()
 	loadFonts();
 
 	this->pauseMenu = new PauseMenu(assets, this->window);
+	this->gameOverMenu = new GameOverMenu(assets, this->window);
 	this->map = new Map(assets, this->window);
 	this->gameUi = new GUI(assets, this->window, this->map);
 
@@ -45,6 +47,8 @@ Game::~Game()
 {
 	delete pauseMenu;
 	pauseMenu = nullptr;
+	delete gameOverMenu;
+    gameOverMenu = nullptr;
 	delete map;
 	map = nullptr;
 	delete gameUi;
@@ -94,8 +98,15 @@ void Game::gameLoop()
 		}
 
 		//int input = -2;
+		// if player dies
+		if (map->player->getLife() == 0) {
+			gameOverMenu->start();
+		}
 
-		if (!pauseMenu->getActive()) {
+		if (!pauseMenu->getActive() && !gameOverMenu->getActive()) {
+
+			
+
 			//input = map->player->inputProcessing(deltaTime);
 			map->checkCollisions(map->player->inputProcessing(deltaTime));
 		}
@@ -136,6 +147,7 @@ void Game::gameLoop()
 		//UI
 		window.setView(window.getDefaultView());
 		pauseMenu->draw(window);
+		gameOverMenu->draw(window);
 		gameUi->draw(window);
 
 		window.display();

@@ -133,7 +133,7 @@ std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> Qu
     for (int p = 0; p < (int)pointsX.size(); p++)
     {
         //std::cout << pointsX[p] << std::endl;
-        if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
+        if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] < y + halfDimensionY)) {
             pointsInRangeX.push_back(x);
             pointsInRangeY.push_back(y);
             type.push_back(this->type[p]);

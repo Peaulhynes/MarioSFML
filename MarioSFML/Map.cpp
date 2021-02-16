@@ -159,12 +159,41 @@ void Map::checkCollisions(int input) {
 				this->player->setScore(this->player->getScore() + 1);
 			}
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "ground") {
+
+			/*	std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree.queryRange(player->getX() + (player->getGlobalBounds().width / 4), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 4, player->getGlobalBounds().height / 2);
+				std::vector<float> temp = std::get<0>(res);
+				if (temp.size() > 0) {
+					float xTemp = temp[0];
+					temp = std::get<1>(res);
+					float yTemp = temp[0];
+					std::vector<std::string> temp = std::get<2>(res);
+					std::string type = temp[0];
+					if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type == "ground") {
+						player->setPosition(sf::Vector2f{ player->getX() , yTemp - blockSize + 15 });
+					}
+				}
+				else {
+					player->setPosition(sf::Vector2f{ xTemp - blockSize + 15 , yTemp - blockSize + 15 });
+				}*/
 				//put the player position to top ground position?
-				player->setPosition(sf::Vector2f{ player->getX() , yTemp - blockSize + 15 });
+				//player->setPosition(sf::Vector2f{ player->getX() , yTemp - blockSize + 15 });
+				
+				player->setPosition(sf::Vector2f{ xTemp - player->getGlobalBounds().width + 16 , player->getY() - 1 });
+				//player->setStartJumping();
+				player->setPosY(player->getY() -1);
+				player->setStartJumping();
 			}
 			/*else {
 				player->setPosY(2000);
 			}*/
+		}
+		else {
+			std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree.queryRange(player->getX() + (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2) + 1, player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+			std::vector<float> temp = std::get<0>(res);
+			if (temp.size() == 0) {
+				player->setBaseY();
+				player->setStartJumping();
+			}
 		}
 	}
 
@@ -198,11 +227,24 @@ void Map::checkCollisions(int input) {
 			}
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "ground") {
 				//put the player position to top ground position?
-				player->setPosition(sf::Vector2f{ player->getX() , yTemp - blockSize + 15 });
+				//player->setPosition(sf::Vector2f{ player->getX(), yTemp - blockSize + 15 });
+				
+				player->setPosition(sf::Vector2f{ xTemp + blockSize - 16 , player->getY() - 1});
+				//player->setStartJumping();
+				player->setPosY(player->getY() - 1);
+				player->setStartJumping();
 			}
 			/*else {
 				player->setPosY(2000);
 			}*/
+		}
+		else {
+			std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree.queryRange(player->getX() - (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2) + 1, player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
+			std::vector<float> temp = std::get<0>(res);
+			if (temp.size() == 0) {
+				player->setBaseY();
+				player->setStartJumping();
+			}
 		}
 	}
 
@@ -244,7 +286,8 @@ void Map::checkCollisions(int input) {
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "ground") {
 				//put the player position to top ground position?
 				player->setPosition(sf::Vector2f{ player->getX() , yTemp - blockSize + 15 });
-				//player->setPosY(yTemp - blockSize + 15);
+				player->setPosY(yTemp - blockSize + 14);
+				player->setStartJumping();
 			}
 		}
 	}
@@ -263,7 +306,7 @@ void Map::checkCollisions(int input) {
 			//Collision with enemy
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "enemy") {
 				player->damage();
-				//hurt the player and stop the jump
+				player->stopJumping();
 			}
 
 			//Collision with coin
