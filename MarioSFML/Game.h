@@ -21,12 +21,10 @@ public:
 
     sf::View mapView;
 
-    sf::Sprite layerBg1;
-    sf::Sprite layerBg2;
-    sf::Sprite layerBg3;
-    sf::View layerBg1View;
-    sf::View layerBg2View;
-    sf::View layerBg3View;
+    std::pair<float, sf::Sprite> farBackground;
+    std::pair<float, sf::Sprite> nearBackground;
+    sf::View farBackgroundView;
+    sf::View nearBackgroundView;
 
 public:
 

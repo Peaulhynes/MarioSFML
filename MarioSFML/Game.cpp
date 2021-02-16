@@ -3,12 +3,16 @@
 #include "Map.h"
 #include "GUI.h"
 
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 800
+
+#define FAR_BACKGROUND_SPEED 10
+#define NEAR_BACKGROUND_SPEED 5
+
+
 Game::Game()
 {
-	int windowWidth = 1200;
-	int windowHeight = 800;
-
-    this->window.create(sf::VideoMode(windowWidth, windowHeight), "Mario");
+    this->window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mario");
     this->window.setFramerateLimit(60);
     this->window.setVerticalSyncEnabled(true);
 
@@ -19,21 +23,22 @@ Game::Game()
 	this->map = new Map(assets, this->window);
 	this->gameUi = new GUI(assets, this->window, this->map);
 
-	this->layerBg1.setTexture(assets.getTRef("background3"));
-	this->layerBg1.setScale({ (float)window.getSize().x / layerBg1.getTexture()->getSize().x, (float)window.getSize().y / layerBg1.getTexture()->getSize().y });
-	this->layerBg2.setTexture(assets.getTRef("background2"));
-	this->layerBg2.setScale({ (float)window.getSize().x / layerBg2.getTexture()->getSize().x, (float)window.getSize().y / layerBg2.getTexture()->getSize().y });
-	this->layerBg3.setTexture(assets.getTRef("background1"));
-	this->layerBg3.setScale({ (float)window.getSize().x / layerBg3.getTexture()->getSize().x, (float)window.getSize().y / layerBg3.getTexture()->getSize().y });
-
+	this->farBackground.first = FAR_BACKGROUND_SPEED;
+	this->farBackground.second.setTexture(assets.getTRef("farBackground"));
+	this->farBackground.second.setScale({ (float)window.getSize().x / farBackground.second.getTexture()->getSize().x, (float)window.getSize().y / farBackground.second.getTexture()->getSize().y });
+	
+	this->nearBackground.first = NEAR_BACKGROUND_SPEED;
+	this->nearBackground.second.setTexture(assets.getTRef("nearBackground"));
+	this->nearBackground.second.setScale({ (float)window.getSize().x / nearBackground.second.getTexture()->getSize().x, (float)window.getSize().y / nearBackground.second.getTexture()->getSize().y });
+	
 	this->mapView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	this->mapView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 
-	this->layerBg1View.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
-	this->layerBg1View.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
+	this->farBackgroundView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
+	this->farBackgroundView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 
-	this->layerBg2View.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
-	this->layerBg2View.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
+	this->nearBackgroundView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
+	this->nearBackgroundView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 }
 
 Game::~Game()
@@ -47,9 +52,8 @@ Game::~Game()
 }
 
 void Game::loadTextures() {
-	assets.loadTexture("background1", "assets/sprites/background1.png");
-	assets.loadTexture("background2", "assets/sprites/background2.png");
-	assets.loadTexture("background3", "assets/sprites/background3.png");
+	assets.loadTexture("farBackground", "assets/sprites/farBackground.png");
+	assets.loadTexture("nearBackground", "assets/sprites/nearBackground.png");
 	assets.loadTexture("player", "assets/sprites/player.png");
 	assets.loadTexture("ground", "assets/sprites/ground.png");
 	assets.loadTexture("gomba", "assets/sprites/gomba.png");
@@ -96,52 +100,43 @@ void Game::gameLoop()
 			map->checkCollisions(map->player->inputProcessing(deltaTime));
 		}
 
-		/* CHANGER LES 10 EN FONCTION DE LA VITESSE DU JOUEUR */
-
 		
-		sf::Vector2f mapPosition((float)window.getSize().x / 2, (float)window.getSize().y / 2);
+		sf::Vector2f screenCenter((float)window.getSize().x / 2, (float)window.getSize().y / 2);
+		sf::Vector2f mapPosition(screenCenter);
+		float playerX = map->player->getX();
 
-		//milieu de l'écran
-		if (map->player->getX() + 10 > map->size.x - window.getSize().x / 2) {
-			mapPosition.x = map->size.x - window.getSize().x / 2;
-			
+		/* middle of map */
+		if (playerX > screenCenter.x && playerX < map->size.x - screenCenter.x) {
+			mapPosition.x = playerX + farBackground.first;
 		}
 
-		//fin de la map
-		else if (map->player->getX() >= window.getSize().x / 2) {
-			mapPosition.x = map->player->getX() + 10;
-			//layerBg1View.move({ 10,0 });
+		/* extremities of map */
+		else {
+			if (playerX >= map->size.x - screenCenter.x)
+				mapPosition.x = map->size.x - screenCenter.x;
 		}
-		/*
-		if (map->player->getX() + 2 > map->size.x - window.getSize().x / 2) {
-			layerBg1Position.x = map->size.x - window.getSize().x / 2;
-		}
-		else if (map->player->getX() + 2 >= window.getSize().x / 2) {
-			layerBg1Position.x = map->player->getX() + 2;
-		}
-*/
+		
 		mapView.setCenter(mapPosition);
-		//layerBg1View.setCenter(layerBg1Position);
+		nearBackgroundView.setCenter(mapPosition);
 
 		window.clear();
 
-		//Second background layer
-		window.setView(layerBg2View);
-		window.draw(layerBg3);
+		//Far background layer
+		window.setView(farBackgroundView);
+		window.draw(farBackground.second);
 
-		//First background layer
-		window.setView(layerBg1View);
-		window.draw(layerBg1);
+		//Near background layer
+		window.setView(nearBackgroundView);
+		window.draw(nearBackground.second);
 		
 		//Map layer
 		window.setView(mapView);
 		map->draw(window);
 
-		//Pause menu
+		//UI
 		window.setView(window.getDefaultView());
 		pauseMenu->draw(window);
 		gameUi->draw(window);
-
 
 		window.display();
     }
