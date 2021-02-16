@@ -1,5 +1,5 @@
-#ifndef TEXTUREMANAGER_H
-#define TEXTUREMANAGER_H
+#ifndef ASSETSMANAGER_H
+#define ASSETSMANAGER_H
 
 #include <SFML/Graphics.hpp>
 #include <map>
@@ -11,7 +11,6 @@ enum LoadingCodes
     LOADING_FONT_CODE
 };
 
-
 class AssetsManager
 {
 
@@ -20,13 +19,16 @@ public:
     AssetsManager() = default;
     ~AssetsManager() = default;
 
-    std::map<std::string, sf::Texture> getTextures();
-    std::map<std::string, sf::Font> getFonts();
-
+    /* Load texture with name and filename. */
     void loadTexture(const std::string& name, const std::string& filename);
+
+    /* Load font with name and filename. */
     void loadFont(const std::string& name, const std::string& filename);
     
+    /* Get texture reference in memory with its name. */
     sf::Texture& getTRef(const std::string& texture);
+
+    /* Get font reference in memory with its name. */
     sf::Font& getFRef(const std::string& font);
     
 private:

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 
+#define BLOCKSIZE 64;
 
 Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
@@ -12,7 +13,7 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 	float groundY = size.y - groundLayers * blockSize;
 
 	this->gravity = 9.81f;
-	this->blockSize = 40;
+	this->blockSize = BLOCKSIZE;
 	this->size = {(float)window.getSize().x, (float)window.getSize().y };
 
 	//Quadtree quadtree(window.getView().getCenter().x, window.getView().getCenter().y, window.getSize().x / 2);
@@ -28,14 +29,7 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 Map::~Map() {
 
 	delete player;
-
-	/*for (unsigned int i = 0; i < groundVector.size(); i++) {
-		delete groundVector[i];
-	}
-
-	for (unsigned int i = 0; i < enemyVector.size(); i++) {
-		delete enemyVector[i];
-	}*/
+	player = nullptr;
 
 	groundMap.clear();
 	enemyMap.clear();
@@ -45,17 +39,6 @@ Map::~Map() {
 void Map::draw(sf::RenderWindow& window) {
 
 	this->player->draw(window);
-
-	/*for (unsigned int i = 0; i < groundVector.size(); i++) {
-		groundVector[i]->draw(window);
-	}
-	for (unsigned int i = 0; i < enemyVector.size(); i++) {
-		enemyVector[i]->draw(window);
-	}
-
-	for (unsigned int i = 0; i < coinVector.size(); i++) {
-		coinVector[i]->draw(window);
-	}*/
 
 	for (auto it = groundMap.begin(); it != groundMap.end(); ++it) {
 		it->second->draw(window);
@@ -158,7 +141,7 @@ void Map::checkCollisions(int input) {
 			std::vector<std::string> temp = std::get<2>(res);
 			std::string type = temp[0];
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type =="enemy") {
-				player->getDamage();
+				player->damage();
 				player->setPosition(sf::Vector2f{ xTemp - player->getGlobalBounds().width, player->getY() });
 			}
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize)) && type == "coin") {
@@ -196,7 +179,7 @@ void Map::checkCollisions(int input) {
 			std::vector<std::string> temp = std::get<2>(res);
 			std::string type = temp[0];
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "enemy") {
-				player->getDamage();
+				player->damage();
 				player->setPosition(sf::Vector2f{ xTemp + player->getGlobalBounds().width , player->getY() });
 			}
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "coin") {
@@ -276,10 +259,14 @@ void Map::checkCollisions(int input) {
 			float yTemp = temp[0];
 			std::vector<std::string> temp = std::get<2>(res);
 			std::string type = temp[0];
+
+			//Collision with enemy
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "enemy") {
-				player->getDamage();
+				player->damage();
 				//hurt the player and stop the jump
 			}
+
+			//Collision with coin
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize)) && type == "coin") {
 				//remove coin from quadtree and vector 
 				this->quadtree.removeItem(player->getX(), player->getY() - (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -294,6 +281,7 @@ void Map::checkCollisions(int input) {
 
 				this->player->setScore(this->player->getScore() + 1);
 			}
+			//Collision with ground
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "ground") {
 				//stop the jump
 				player->stopJumping();

@@ -64,6 +64,10 @@ float Player::getY() {
 	return player.getPosition().y;
 }
 
+float Player::getSpeed() {
+	return moveSpeed;
+}
+
 int Player::getScore() {
 	return score;
 }
@@ -72,30 +76,9 @@ sf::FloatRect Player::getGlobalBounds() {
 	return player.getGlobalBounds();
 }
 
-void Player::getDamage() {
+void Player::damage() {
 	this->life -= 1;
 }
-
-/*bool Player::isCollidingWithCoin(Coin* coin) {
-	return player.getGlobalBounds().intersects(coin->getGlobalBounds());
-}
-
-bool Player::isCollidingWithEnemy(Enemy* enemy) {
-	return player.getGlobalBounds().intersects(enemy->getGlobalBounds());
-}
-
-int Player::collidesWithGround(Ground* ground) {
-	if (player.getGlobalBounds().intersects(ground->getGlobalBounds())) {
-		if (getY() < ground->getY()) {
-			return Directions::UP;
-		}
-		else if (getY() + size > ground->getY()) {
-			return Directions::DOWN;
-		}
-	}
-	else
-		return -1;
-}*/
 
 int Player::inputProcessing(float deltaTime) {
 

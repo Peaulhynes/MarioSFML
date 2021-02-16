@@ -12,7 +12,10 @@ class GUI
 public:
 	GUI(AssetsManager& assets, sf::RenderWindow& window, Map *map);
 	~GUI();
+
+	/* Draw GUI on specified window. */
 	void draw(sf::RenderWindow& window);
+
 private:
 	Map *map;
 	sf::Text scoreText;

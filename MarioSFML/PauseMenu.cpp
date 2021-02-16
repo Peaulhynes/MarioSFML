@@ -4,7 +4,7 @@
 PauseMenu::PauseMenu(AssetsManager& assets, sf::RenderWindow& window) {
 
 	//Overlay
-	this->overlay = sf::RectangleShape(sf::Vector2f(window.getSize().x, window.getSize().y));
+	this->overlay = sf::RectangleShape(sf::Vector2f((float)window.getSize().x, (float)window.getSize().y));
 	overlay.setFillColor(sf::Color(0, 0, 0, 200));
 
 	//Message
@@ -28,10 +28,6 @@ bool PauseMenu::getActive() {
 
 void PauseMenu::start() {
 	active = true;
-}
-
-void PauseMenu::end() {
-	active = false;
 }
 
 void PauseMenu::switchMode() {

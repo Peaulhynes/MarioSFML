@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "View.h"
 #include "PauseMenu.h"
 #include "Map.h"
 #include "GUI.h"
@@ -27,26 +26,24 @@ Game::Game()
 	this->layerBg3.setTexture(assets.getTRef("background1"));
 	this->layerBg3.setScale({ (float)window.getSize().x / layerBg3.getTexture()->getSize().x, (float)window.getSize().y / layerBg3.getTexture()->getSize().y });
 
-	this->mapView.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-	this->mapView.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
+	this->mapView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
+	this->mapView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 
-	this->layerBg1View.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-	this->layerBg1View.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
+	this->layerBg1View.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
+	this->layerBg1View.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 
-
-	this->layerBg2View.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-	this->layerBg2View.setViewport(sf::FloatRect(0, 0, 1.0f, 1.0f));
-	/*
-	this->background.setTexture(assets.getTRef("background1"));
-	this->background.setScale({ (float)window.getSize().x / background.getTexture()->getSize().x, (float)window.getSize().y / background.getTexture()->getSize().y });
-	*/
+	this->layerBg2View.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
+	this->layerBg2View.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 }
 
 Game::~Game()
 {
 	delete pauseMenu;
+	pauseMenu = nullptr;
 	delete map;
+	map = nullptr;
 	delete gameUi;
+	gameUi = nullptr;
 }
 
 void Game::loadTextures() {
@@ -101,13 +98,19 @@ void Game::gameLoop()
 
 		/* CHANGER LES 10 EN FONCTION DE LA VITESSE DU JOUEUR */
 
-		sf::Vector2f mapPosition(window.getSize().x / 2, window.getSize().y / 2);
+		
+		sf::Vector2f mapPosition((float)window.getSize().x / 2, (float)window.getSize().y / 2);
 
+		//milieu de l'écran
 		if (map->player->getX() + 10 > map->size.x - window.getSize().x / 2) {
 			mapPosition.x = map->size.x - window.getSize().x / 2;
+			
 		}
-		else if (map->player->getX() + 10 >= window.getSize().x / 2) {
+
+		//fin de la map
+		else if (map->player->getX() >= window.getSize().x / 2) {
 			mapPosition.x = map->player->getX() + 10;
+			//layerBg1View.move({ 10,0 });
 		}
 		/*
 		if (map->player->getX() + 2 > map->size.x - window.getSize().x / 2) {
@@ -123,7 +126,7 @@ void Game::gameLoop()
 		window.clear();
 
 		//Second background layer
-		window.setView(layerBg3View);
+		window.setView(layerBg2View);
 		window.draw(layerBg3);
 
 		//First background layer

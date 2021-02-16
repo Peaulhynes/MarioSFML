@@ -2,7 +2,7 @@
 #define QUADTREE_H
 
 #include <vector>
-#include<tuple>
+#include <tuple>
 #include <iostream>
 
 class Quadtree

@@ -11,9 +11,6 @@ class Map
 {
 public:
 	Player *player;
-	/*std::vector<Ground*> groundVector;
-	std::vector<Enemy*> enemyVector;
-	std::vector<Coin*> coinVector;*/
 	std::map<std::pair<float, float>, Ground*> groundMap;
 	std::map<std::pair<float, float>, Enemy*> enemyMap;
 	std::map<std::pair<float, float>, Coin*> coinMap;
@@ -23,14 +20,20 @@ public:
 	float gravity;
 	float blockSize;
 	sf::Vector2f size;
-	sf::Vector2f nbBlocks;
+	sf::Vector2i nbBlocks;
 
 
 public:
 	Map(AssetsManager& assets, sf::RenderWindow& window);
 	~Map();
+
+	/* Draw map on specified window. */
 	void draw(sf::RenderWindow& window);
+
+	/* Load map from text file and initialize it in memory. */
 	void readMap(AssetsManager& assets, Quadtree& quadtree);
+
+	/* Check collisions in map. */
 	void checkCollisions(int input);
 };
 

@@ -1,12 +1,5 @@
 #include "AssetsManager.h"
 
-std::map<std::string, sf::Texture> AssetsManager::getTextures() {
-    return textures;
-}
-std::map<std::string, sf::Font> AssetsManager::getFonts() {
-    return fonts;
-}
-
 void AssetsManager::loadTexture(const std::string& name, const std::string& filename)
 {
     /* Load the texture */

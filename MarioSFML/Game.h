@@ -32,8 +32,14 @@ public:
 
     Game();
     ~Game();
+
+    /* Load all game textures. */
     void loadTextures();
+
+    /* Load all game fonts. */
     void loadFonts();
+
+    /* Main loop of the game. */
     void gameLoop();
 
 };

@@ -14,6 +14,7 @@ int main()
 	Game* game = new Game();
 	game->gameLoop();
 	delete game;
+	game = nullptr;
 	_CrtDumpMemoryLeaks();
 
 	return EXIT_SUCCESS;

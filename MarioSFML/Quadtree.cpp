@@ -18,17 +18,21 @@ Quadtree::Quadtree(float x, float y, float halfDimensionX, float halfDimensionY)
     this->y = y;
     this->halfDimensionX = halfDimensionX;
     this->halfDimensionY = halfDimensionY;
-    this->northWest = NULL;
-    this->northEast = NULL;
-    this->southWest = NULL;
-    this->southEast = NULL;
+    this->northWest = nullptr;
+    this->northEast = nullptr;
+    this->southWest = nullptr;
+    this->southEast = nullptr;
 }
 
 Quadtree::~Quadtree() {
     delete northWest;
+    northWest = nullptr;
     delete northEast;
+    northEast = nullptr;
     delete southWest;
+    southWest = nullptr;
     delete southEast;
+    southEast = nullptr;
 }
 
 float Quadtree::getX() {
@@ -58,7 +62,7 @@ bool Quadtree::insert(float x, float y, std::string type) {
         return false; // object cannot be added
     }
     // If there is space in this quad tree and if doesn't have subdivisions, add the object here
-    if (pointsX.size() < QT_NODE_CAPACITY && northWest == NULL)
+    if ((int)pointsX.size() < QT_NODE_CAPACITY && northWest == NULL)
     {
         //std::cout << "insert add \n";
         pointsX.push_back(x);
@@ -126,7 +130,7 @@ std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> Qu
     }
     //std::cout << pointsX.size() << "\n";
     // Check objects at this quad level
-    for (int p = 0; p < pointsX.size(); p++)
+    for (int p = 0; p < (int)pointsX.size(); p++)
     {
         //std::cout << pointsX[p] << std::endl;
         if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
@@ -205,7 +209,7 @@ void Quadtree::removeItem(float x, float y, float halfDimensionX, float halfDime
     }
 
     // Check objects at this quad level
-      for (int p = 0; p < pointsX.size(); p++)
+      for (int p = 0; p < (int)pointsX.size(); p++)
     {
         if ((pointsX[p] >= x - halfDimensionX && pointsX[p] <= x + halfDimensionX && pointsY[p] >= y - halfDimensionY && pointsY[p] <= y + halfDimensionY)) {
             pointsX.erase(pointsX.begin() + p);

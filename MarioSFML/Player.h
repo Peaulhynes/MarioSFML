@@ -4,29 +4,51 @@
 #include <SFML/Graphics.hpp>
 #include "Enemy.h"
 #include "Block.h"
-#include "Directions.h"
 
 class Player
 {
 public:
 	Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
 	~Player() = default;
+
+    /* Draw player on specified window. */
 	void draw(sf::RenderWindow& window);
+
+    /* Move player with specified distance. */
 	void move(sf::Vector2f distance);
+
+    /* Make the player jump with specified distance. */
 	void jump(sf::Vector2f distance);
+
+    /* Set player position. */
 	void setPosition(sf::Vector2f position);
+
+    /* Set player score. */
     void setScore(int score);
+
+    /* Get player X coordinates. */
 	float getX();
+
+    /* Get player Y coordinates. */
 	float getY();
+
+    /* Get player speed. */
+    float getSpeed();
+
+    /* Get player score. */
     int getScore();
+
+    /* Get player collision box. */
 	sf::FloatRect getGlobalBounds();
-   /* bool isCollidingWithCoin(Coin* coin);
-    bool isCollidingWithEnemy(Enemy* enemy);
-    int collidesWithGround(Ground* ground);*/
+
+    /* Process user input in game. */
     int inputProcessing(float deltaTime);
-    void getDamage();
+
+    /* Cause damage to player. */
+    void damage();
+
+    /* End player jumping. */
     void stopJumping();
-    //void setPosY(float posY);
 
 private:
     sf::RectangleShape player;
