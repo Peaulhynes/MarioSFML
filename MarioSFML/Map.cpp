@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-#define BLOCKSIZE 64;
+#define BLOCKSIZE 40;
 
 Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
@@ -34,6 +34,7 @@ Map::~Map() {
 	groundMap.clear();
 	enemyMap.clear();
 	coinMap.clear();
+	flagMap.clear();
 }
 
 void Map::draw(sf::RenderWindow& window) {
@@ -49,6 +50,10 @@ void Map::draw(sf::RenderWindow& window) {
 	}
 
 	for (auto it = coinMap.begin(); it != coinMap.end(); ++it) {
+		it->second->draw(window);
+	}
+
+	for (auto it = flagMap.begin(); it != flagMap.end(); ++it) {
 		it->second->draw(window);
 	}
 
@@ -123,12 +128,30 @@ void Map::readMap(AssetsManager& assets, Quadtree& quadtree) {
 			if (temp.size() > 0)
 				total++;*/
 		}
+
+		if (ch == '*') {
+			Flag* flag = new Flag({ blockSize, blockSize }, &assets.getTRef("flagMiddle"), { blockSize * col, size.y - row * blockSize });
+			flagMap.insert({ std::make_pair(blockSize * col, size.y - row * blockSize),flag });
+			quadtree.insert(blockSize * col, size.y - row * blockSize, "flag");
+		}
+
+		if (ch == '=') {
+			Flag* flag = new Flag({ blockSize, blockSize }, &assets.getTRef("flagBottom"), { blockSize * col, size.y - row * blockSize });
+			flagMap.insert({ std::make_pair(blockSize * col, size.y - row * blockSize),flag });
+			quadtree.insert(blockSize * col, size.y - row * blockSize, "flag");
+		}
+
+		if (ch == '-') {
+			Flag* flag = new Flag({ blockSize, blockSize }, &assets.getTRef("flagTop"), { blockSize * col, size.y - row * blockSize });
+			flagMap.insert({ std::make_pair(blockSize * col, size.y - row * blockSize),flag });
+			quadtree.insert(blockSize * col, size.y - row * blockSize, "flag");
+		}
 	}
 	this->nbBlocks.x = maxCol;
 	//std::cout << total << std::endl; // 168 correspond bien � tous les �l�ments de la map (sans 2 ni P ni * car pas encore mis)
 }
 
-void Map::checkCollisions(int input) {
+std::string Map::checkCollisions(int input) {
 
 	// player goes right
 	if (input == 1) {
@@ -183,9 +206,9 @@ void Map::checkCollisions(int input) {
 				player->setPosY(player->getY() -1);
 				player->setStartJumping();
 			}
-			/*else {
-				player->setPosY(2000);
-			}*/
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type == "flag") {
+				return "victory";
+			}
 		}
 		else {
 			std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree.queryRange(player->getX() + (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2) + 1, player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -234,9 +257,9 @@ void Map::checkCollisions(int input) {
 				player->setPosY(player->getY() - 1);
 				player->setStartJumping();
 			}
-			/*else {
-				player->setPosY(2000);
-			}*/
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type == "flag") {
+				return "victory";
+			}
 		}
 		else {
 			std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree.queryRange(player->getX() - (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2) + 1, player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -289,6 +312,9 @@ void Map::checkCollisions(int input) {
 				player->setPosY(yTemp - blockSize + 14);
 				player->setStartJumping();
 			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type == "flag") {
+				return "victory";
+			}
 		}
 	}
 
@@ -329,8 +355,13 @@ void Map::checkCollisions(int input) {
 				//stop the jump
 				player->stopJumping();
 			}
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type == "flag") {
+				return "victory";
+			}
 		}
 	}
+
+	return "game";
 
 	//std::cout << player->getX() - blockSize << " X " << (player->getX() - blockSize) / 2 << " half \n";
 

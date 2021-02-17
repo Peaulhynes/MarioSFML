@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "PauseMenu.h"
 #include "GameOverMenu.h"
+#include "VictoryMenu.h"
 #include "Map.h"
 #include "GUI.h"
 
@@ -22,6 +23,7 @@ Game::Game()
 
 	this->pauseMenu = new PauseMenu(assets, this->window);
 	this->gameOverMenu = new GameOverMenu(assets, this->window);
+	this->victoryMenu = new VictoryMenu(assets, this->window);
 	this->map = new Map(assets, this->window);
 	this->gameUi = new GUI(assets, this->window, this->map);
 
@@ -49,6 +51,8 @@ Game::~Game()
 	pauseMenu = nullptr;
 	delete gameOverMenu;
     gameOverMenu = nullptr;
+	delete victoryMenu;
+	victoryMenu = nullptr;
 	delete map;
 	map = nullptr;
 	delete gameUi;
@@ -62,6 +66,9 @@ void Game::loadTextures() {
 	assets.loadTexture("ground", "assets/sprites/ground.png");
 	assets.loadTexture("gomba", "assets/sprites/gomba.png");
 	assets.loadTexture("coin", "assets/sprites/coin.png");
+	assets.loadTexture("flagBottom", "assets/sprites/flag_bottom.png");
+	assets.loadTexture("flagMiddle", "assets/sprites/flag_middle.png");
+	assets.loadTexture("flagTop", "assets/sprites/flag_top.png");
 }
 
 void Game::loadFonts() {
@@ -71,6 +78,8 @@ void Game::loadFonts() {
 void Game::gameLoop()
 {
 	sf::Clock clock;
+	std::string etat = "game";
+
     while (this->window.isOpen())
     {
 		sf::Event event;
@@ -81,7 +90,9 @@ void Game::gameLoop()
 
 			//CHANGE WINDOW
 			case sf::Event::LostFocus:
-				pauseMenu->start();
+				if (etat == "game") {
+					pauseMenu->start();
+				}
 				break;
 
 			//CLOSE WINDOW
@@ -91,24 +102,29 @@ void Game::gameLoop()
 
 			//ESCAPE
 			case sf::Event::KeyPressed:
-				if (event.key.code == sf::Keyboard::Escape) {
+				if (event.key.code == sf::Keyboard::Escape && etat == "game") {
 					pauseMenu->switchMode();
 				}
 			}
 		}
 
-		//int input = -2;
+		//if player reached the flag
+		if (etat == "victory") {
+			victoryMenu->start();
+		}
+
 		// if player dies
 		if (map->player->getLife() == 0) {
+			etat = "gameover";
 			gameOverMenu->start();
 		}
 
-		if (!pauseMenu->getActive() && !gameOverMenu->getActive()) {
+		if (!pauseMenu->getActive() && !gameOverMenu->getActive() && !victoryMenu->getActive()) {
 
 			
 
 			//input = map->player->inputProcessing(deltaTime);
-			map->checkCollisions(map->player->inputProcessing(deltaTime));
+			etat = map->checkCollisions(map->player->inputProcessing(deltaTime));
 		}
 
 		
@@ -124,7 +140,7 @@ void Game::gameLoop()
 		/* extremities of map */
 		else {
 			if (playerX >= map->size.x - screenCenter.x)
-				mapPosition.x = map->size.x - screenCenter.x;
+				mapPosition.x = map->size.x - screenCenter.x + 100;
 		}
 		
 		mapView.setCenter(mapPosition);
@@ -148,6 +164,7 @@ void Game::gameLoop()
 		window.setView(window.getDefaultView());
 		pauseMenu->draw(window);
 		gameOverMenu->draw(window);
+		victoryMenu->draw(window);
 		gameUi->draw(window);
 
 		window.display();

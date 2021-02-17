@@ -14,6 +14,7 @@ public:
 	std::map<std::pair<float, float>, Ground*> groundMap;
 	std::map<std::pair<float, float>, Enemy*> enemyMap;
 	std::map<std::pair<float, float>, Coin*> coinMap;
+	std::map<std::pair<float, float>, Flag*> flagMap;
 
 	Quadtree quadtree;
 
@@ -34,7 +35,7 @@ public:
 	void readMap(AssetsManager& assets, Quadtree& quadtree);
 
 	/* Check collisions in map. */
-	void checkCollisions(int input);
+	std::string checkCollisions(int input);
 };
 
 #endif // !MAP_H

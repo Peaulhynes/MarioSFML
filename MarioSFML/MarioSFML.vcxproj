@@ -30,6 +30,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="AssetsManager.cpp" />
     <ClCompile Include="Quadtree.cpp" />
+    <ClCompile Include="VictoryMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Quadtree.h" />
+    <ClInclude Include="VictoryMenu.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

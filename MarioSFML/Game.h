@@ -7,6 +7,7 @@
 class View;
 class PauseMenu;
 class GameOverMenu;
+class VictoryMenu;
 class Map;
 class GUI;
 
@@ -18,6 +19,7 @@ public:
     AssetsManager assets;
     PauseMenu* pauseMenu;
     GameOverMenu* gameOverMenu;
+    VictoryMenu* victoryMenu;
     GUI* gameUi;
     Map* map;
 
