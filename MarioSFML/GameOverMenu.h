@@ -9,12 +9,10 @@ class GameOverMenu
 public:
 	GameOverMenu(AssetsManager& assets, sf::RenderWindow& window);
 	~GameOverMenu();
-	bool getActive();
-	void start();
-	void end();
+	void update(int gameStatus);
 	void draw(sf::RenderWindow& window);
-private:
 
+private:
 	sf::RectangleShape overlay;
 	sf::Text message;
 	bool active;

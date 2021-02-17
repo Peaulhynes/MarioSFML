@@ -14,24 +14,41 @@ GUI::GUI(AssetsManager& assets, sf::RenderWindow& window, Map *map) {
 	lifeText.setCharacterSize(20);
 	lifeText.setPosition(sf::Vector2f(30, 60));
 
+	this->active = false;
 }
 
 GUI::~GUI() {}
 
+void GUI::update(int gameStatus) {
+	switch (gameStatus) {
+	case GameStatus::PAUSE:
+	case GameStatus::INGAME:
+		active = true;
+		break;
+	case GameStatus::START:
+	case GameStatus::GAMEOVER:
+	default:
+		active = false;
+		break;
+	}
+}
+
 void GUI::draw(sf::RenderWindow& window) {
-	std::ostringstream oss;
-	int score = map->player->getScore();
-	oss << score;
-	std::string scoreString = oss.str();
+	if (active) {
+		std::ostringstream oss;
+		int score = map->player->getScore();
+		oss << score;
+		std::string scoreString = oss.str();
 
-	scoreText.setString("SCORE : " + scoreString);
-	window.draw(scoreText);
+		scoreText.setString("SCORE : " + scoreString);
+		window.draw(scoreText);
 
-	std::ostringstream ossLife;
-	int life = map->player->getLife();
-	ossLife << life;
-	std::string lifeString = ossLife.str();
+		std::ostringstream ossLife;
+		int life = map->player->getLife();
+		ossLife << life;
+		std::string lifeString = ossLife.str();
 
-	lifeText.setString("LIFE : " + lifeString);
-	window.draw(lifeText);
+		lifeText.setString("LIFE : " + lifeString);
+		window.draw(lifeText);
+	}
 }

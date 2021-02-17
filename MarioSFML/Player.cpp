@@ -8,13 +8,14 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	this->size = size.y;
 	this->moveSpeed = 200.f;
 	this->isJumping = false;
-	this->maxJump = 200.f;
+	this->maxJump = 100.f;
 	this->posY = getY();
 	this->basePosY = getY();
 	this->startJumping = false;
-	this->gravity = -1.5f;
+	this->gravity = 2.f;
 	this->score = 0;
 	this->life = 3;
+
 }
 
 void Player::draw(sf::RenderWindow& window) {
@@ -29,7 +30,7 @@ void Player::jump(sf::Vector2f distance) {
 
 	//up
 	if (isJumping && getY() > posY - maxJump) {
-		player.move(distance * -gravity);
+		player.move(distance * gravity);
 	}
 	//need to go down because maxJump reached
 	if (isJumping && getY() <= posY - maxJump) {
@@ -37,8 +38,8 @@ void Player::jump(sf::Vector2f distance) {
 	}
 	//down
 	if (!isJumping && getY() < posY) {
-		player.move(distance * gravity);
-		//put the player on the ground (without it the player is a bit in the ground)
+		player.move(distance * -gravity);
+		//put the player on the grou-nd (without it the player is a bit in the ground)
 		if (getY() > posY) {
 			setPosition({ (float)getX(),posY });
 		}
@@ -85,9 +86,8 @@ void Player::damage() {
 int Player::getLife() {
 	return this->life;
 }
-int Player::inputProcessing(float deltaTime) {
 
-	//float input;
+int Player::inputProcessing(float deltaTime) {
 
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -100,18 +100,13 @@ int Player::inputProcessing(float deltaTime) {
 		
 		jump({ 0, -moveSpeed * deltaTime });
 
-		//input = 0;
-
 		//RIGHT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 			move({ moveSpeed * deltaTime, 0 });
-			//input = 2;
 		}
 		//LEFT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			//if (getX() > moveSpeed * deltaTime)
-				move({ -moveSpeed * deltaTime, 0 });
-			//input = 3;
+			move({ -moveSpeed * deltaTime, 0 });
 		}
 
 		return 0;

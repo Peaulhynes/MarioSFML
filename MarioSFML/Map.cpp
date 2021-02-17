@@ -3,21 +3,17 @@
 #include <iostream>
 #include <fstream>
 
-#define BLOCKSIZE 64;
+#define BLOCKSIZE 40;
+#define QUADTREE_X 6000
+#define QUADTREE_Y 1600
 
 Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
-	/* A SUPPRIMER A LONG TERME*/
-	int groundLayers = 3;
-	int blockPerLine = 60;
-	float groundY = size.y - groundLayers * blockSize;
-
-	this->gravity = 9.81f;
 	this->blockSize = BLOCKSIZE;
 	this->size = {(float)window.getSize().x, (float)window.getSize().y };
 
 	//Quadtree quadtree(window.getView().getCenter().x, window.getView().getCenter().y, window.getSize().x / 2);
-	Quadtree quadtree(6000/2, 1600/2, 6000 / 2,1600/2);
+	Quadtree quadtree(QUADTREE_X/2, QUADTREE_Y/2, QUADTREE_X/2, QUADTREE_Y/2);
 	this->quadtree.setXYHalf(quadtree.getX(), quadtree.getY(), quadtree.getHalfX(), quadtree.getHalfY());
 	//std::cout << this->quadtree.getX() << "\n";
 

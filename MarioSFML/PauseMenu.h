@@ -10,15 +10,7 @@ public:
 	PauseMenu(AssetsManager& assets, sf::RenderWindow& window);
 	~PauseMenu();
 
-	/* Get PauseMenu activity state. */
-	bool getActive();
-
-	/* Start pause. */
-	void start();
-
-	/* Switch PauseMenu activity state. */
-	void switchMode();
-
+	void update(int gameStatus);
 	/* Draw PauseMenu on specified window. */
 	void draw(sf::RenderWindow& window);
 

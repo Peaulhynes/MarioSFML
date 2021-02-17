@@ -17,11 +17,9 @@ public:
 
 	Quadtree quadtree;
 
-	float gravity;
 	float blockSize;
 	sf::Vector2f size;
 	sf::Vector2i nbBlocks;
-
 
 public:
 	Map(AssetsManager& assets, sf::RenderWindow& window);

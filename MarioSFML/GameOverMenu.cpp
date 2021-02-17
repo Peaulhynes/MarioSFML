@@ -22,16 +22,18 @@ GameOverMenu::GameOverMenu(AssetsManager& assets, sf::RenderWindow& window) {
 
 GameOverMenu::~GameOverMenu() {}
 
-bool GameOverMenu::getActive() {
-	return active;
-}
-
-void GameOverMenu::start() {
-	active = true;
-}
-
-void GameOverMenu::end() {
-	active = false;
+void GameOverMenu::update(int gameStatus) {
+	switch (gameStatus) {
+	case GameStatus::GAMEOVER:
+		active = true;
+		break;
+	case GameStatus::START:
+	case GameStatus::PAUSE:
+	case GameStatus::INGAME:
+	default:
+		active = false;
+		break;
+	}
 }
 
 void GameOverMenu::draw(sf::RenderWindow& window) {

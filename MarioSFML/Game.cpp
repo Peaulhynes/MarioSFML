@@ -23,7 +23,7 @@ Game::Game()
 	this->pauseMenu = new PauseMenu(assets, this->window);
 	this->gameOverMenu = new GameOverMenu(assets, this->window);
 	this->map = new Map(assets, this->window);
-	this->gameUi = new GUI(assets, this->window, this->map);
+	this->gui = new GUI(assets, this->window, this->map);
 
 	this->farBackground.first = FAR_BACKGROUND_SPEED;
 	this->farBackground.second.setTexture(assets.getTRef("farBackground"));
@@ -41,6 +41,8 @@ Game::Game()
 
 	this->nearBackgroundView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	this->nearBackgroundView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
+
+	this->status = GameStatus::INGAME;
 }
 
 Game::~Game()
@@ -49,10 +51,10 @@ Game::~Game()
 	pauseMenu = nullptr;
 	delete gameOverMenu;
     gameOverMenu = nullptr;
+	delete gui;
+	gui = nullptr;
 	delete map;
 	map = nullptr;
-	delete gameUi;
-	gameUi = nullptr;
 }
 
 void Game::loadTextures() {
@@ -81,7 +83,8 @@ void Game::gameLoop()
 
 			//CHANGE WINDOW
 			case sf::Event::LostFocus:
-				pauseMenu->start();
+				if (status == GameStatus::INGAME)
+					status = GameStatus::PAUSE;
 				break;
 
 			//CLOSE WINDOW
@@ -92,26 +95,33 @@ void Game::gameLoop()
 			//ESCAPE
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::Escape) {
-					pauseMenu->switchMode();
+					switch (status) {
+						case GameStatus::GAMEOVER:
+						case GameStatus::START:
+							window.close();
+							break;
+						case GameStatus::INGAME:
+							status = GameStatus::PAUSE;
+							break;
+						case GameStatus::PAUSE:
+							status = GameStatus::INGAME;
+							break;
+						default:
+							break;
+					}
 				}
 			}
 		}
 
-		//int input = -2;
-		// if player dies
-		if (map->player->getLife() == 0) {
-			gameOverMenu->start();
-		}
-
-		if (!pauseMenu->getActive() && !gameOverMenu->getActive()) {
-
-			
-
-			//input = map->player->inputProcessing(deltaTime);
+		if (status == GameStatus::INGAME) {
 			map->checkCollisions(map->player->inputProcessing(deltaTime));
+			if (map->player->getLife() == 0) 
+				status = GameStatus::GAMEOVER;
 		}
+		pauseMenu->update(status);
+		gameOverMenu->update(status);
+		gui->update(status);
 
-		
 		sf::Vector2f screenCenter((float)window.getSize().x / 2, (float)window.getSize().y / 2);
 		sf::Vector2f mapPosition(screenCenter);
 		float playerX = map->player->getX();
@@ -124,7 +134,7 @@ void Game::gameLoop()
 		/* extremities of map */
 		else {
 			if (playerX >= map->size.x - screenCenter.x)
-				mapPosition.x = map->size.x - screenCenter.x;
+				mapPosition.x = map->size.x +100- screenCenter.x;
 		}
 		
 		mapView.setCenter(mapPosition);
@@ -148,7 +158,7 @@ void Game::gameLoop()
 		window.setView(window.getDefaultView());
 		pauseMenu->draw(window);
 		gameOverMenu->draw(window);
-		gameUi->draw(window);
+		gui->draw(window);
 
 		window.display();
     }

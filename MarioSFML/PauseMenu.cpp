@@ -22,16 +22,18 @@ PauseMenu::PauseMenu(AssetsManager& assets, sf::RenderWindow& window) {
 
 PauseMenu::~PauseMenu(){}
 
-bool PauseMenu::getActive() {
-	return active;
-}
-
-void PauseMenu::start() {
-	active = true;
-}
-
-void PauseMenu::switchMode() {
-	active = !active;
+void PauseMenu::update(int gameStatus) {
+	switch (gameStatus) {
+	case GameStatus::PAUSE:
+		active = true;
+		break;
+	case GameStatus::START:
+	case GameStatus::GAMEOVER:
+	case GameStatus::INGAME:
+	default:
+		active = false;
+		break;
+	}
 }
 
 void PauseMenu::draw(sf::RenderWindow& window) {

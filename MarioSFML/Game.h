@@ -4,6 +4,13 @@
 #include <SFML/Graphics.hpp>
 #include "AssetsManager.h"
 
+enum GameStatus {
+    START,
+    INGAME,
+    PAUSE,
+    GAMEOVER
+};
+
 class View;
 class PauseMenu;
 class GameOverMenu;
@@ -18,7 +25,7 @@ public:
     AssetsManager assets;
     PauseMenu* pauseMenu;
     GameOverMenu* gameOverMenu;
-    GUI* gameUi;
+    GUI* gui;
     Map* map;
 
     sf::View mapView;
@@ -27,6 +34,8 @@ public:
     std::pair<float, sf::Sprite> nearBackground;
     sf::View farBackgroundView;
     sf::View nearBackgroundView;
+
+    int status;
 
 public:
 
