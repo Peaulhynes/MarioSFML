@@ -1,7 +1,7 @@
 #include "Quadtree.h"
 #include <iostream>
 
-Quadtree::Quadtree() {
+/*Quadtree::Quadtree() {
     this->x = 0.f;
     this->y = 0.f;
     this->halfDimensionX = 0.f;
@@ -11,7 +11,7 @@ Quadtree::Quadtree() {
     this->southWest = NULL;
     this->southEast = NULL;
 
-}
+}*/
 
 Quadtree::Quadtree(float x, float y, float halfDimensionX, float halfDimensionY) {
     this->x = x;
@@ -34,7 +34,7 @@ Quadtree::~Quadtree() {
     delete southEast;
     southEast = nullptr;
 }
-
+/*
 float Quadtree::getX() {
     return x;
 }
@@ -52,7 +52,7 @@ void Quadtree::setXYHalf(float x, float y, float halfX, float halfY) {
     this->y = y;
     this->halfDimensionX = halfX;
     this->halfDimensionY = halfY;
-}
+}*/
 
 bool Quadtree::insert(float x, float y, std::string type) {
 
