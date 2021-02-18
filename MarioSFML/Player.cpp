@@ -82,7 +82,7 @@ void Player::damage() {
 	this->life = std::max(this->life - 1, 0);
 }
 
-int Player::inputProcessing(float deltaTime) {
+int Player::inputProcessing(float deltaTime, float mapSizeX) {
 
 	//JUMP
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
@@ -97,11 +97,13 @@ int Player::inputProcessing(float deltaTime) {
 		
 		//RIGHT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			player.move({ moveSpeed * deltaTime, 0 });
+			if (getX() + (moveSpeed * deltaTime) < mapSizeX)
+				player.move({ moveSpeed * deltaTime, 0 });
 		}
 		//LEFT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			player.move({ -moveSpeed * deltaTime, 0 });
+			if(getX() + (-moveSpeed * deltaTime) > 0)
+				player.move({ -moveSpeed * deltaTime, 0 });
 		}
 
 		return Direction::UP;
@@ -115,13 +117,15 @@ int Player::inputProcessing(float deltaTime) {
 
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		player.move({ moveSpeed * deltaTime, 0 });
+		if (getX() + (moveSpeed * deltaTime) < mapSizeX)
+			player.move({ moveSpeed * deltaTime, 0 });
 		return Direction::RIGHT;
 	}
 	//LEFT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-		if (getX() > moveSpeed * deltaTime)
-			player.move({ -moveSpeed * deltaTime, 0 });
+		if (getX() + (-moveSpeed * deltaTime) > 0)
+			if (getX() > moveSpeed * deltaTime)
+				player.move({ -moveSpeed * deltaTime, 0 });
 		return Direction::LEFT;
 	}
 

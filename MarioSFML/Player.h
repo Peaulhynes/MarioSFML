@@ -37,7 +37,7 @@ public:
 	sf::FloatRect getGlobalBounds();
 
     /* Process user input in game. */
-    int inputProcessing(float deltaTime);
+    int inputProcessing(float deltaTime, float mapSizeX);
 
     /* Cause damage to player. */
     void damage();

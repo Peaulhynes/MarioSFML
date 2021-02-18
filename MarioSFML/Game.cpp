@@ -127,7 +127,7 @@ void Game::gameLoop()
 		}
 
 		if (status == GameStatus::INGAME) {
-			status = map->checkCollisions(map->player->inputProcessing(deltaTime));
+			status = map->checkCollisions(map->player->inputProcessing(deltaTime, map->size.x - 40));
 		}
 
 		startMenu->update(status);
