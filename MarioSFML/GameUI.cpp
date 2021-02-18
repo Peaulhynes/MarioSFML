@@ -179,7 +179,7 @@ VictoryMenu::VictoryMenu(AssetsManager& assets, sf::RenderWindow& window) : Game
 	overlay.setFillColor(sf::Color(0, 0, 0, 200));
 
 	//Title
-	title.setString("YOU WIN !");
+	title.setString("YOU WON !");
 	title.setFont(assets.getFRef("minecraft"));
 	title.setCharacterSize(BIG_FONT_SIZE);
 	sf::FloatRect titleRect = title.getLocalBounds();

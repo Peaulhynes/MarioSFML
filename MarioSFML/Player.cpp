@@ -1,5 +1,4 @@
 #include "Player.h"
-//#include <algorithm>
 
 Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
     player.setSize(size);
@@ -35,7 +34,7 @@ void Player::jump(sf::Vector2f distance) {
 	//down
 	if (!isJumping && getY() < posY) {
 		player.move(distance * -gravity);
-		//put the player on the grou-nd (without it the player is a bit in the ground)
+		//put the player on the ground (without it the player is a bit in the ground)
 		if (getY() > posY) {
 			setPosition({ (float)getX(),posY });
 		}

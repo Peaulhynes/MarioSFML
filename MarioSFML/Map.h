@@ -30,7 +30,7 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	/* Load map from text file and initialize it in memory. */
-	void readMap(AssetsManager& assets, Quadtree* quadtree);
+	void readMap(AssetsManager& assets);
 
 	/* Check collisions in map. */
 	int checkCollisions(int input);
