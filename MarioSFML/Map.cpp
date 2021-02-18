@@ -75,7 +75,6 @@ void Map::readMap(AssetsManager& assets, Quadtree* quadtree) {
 	mapFile.clear();
 	mapFile.seekg(0);
 
-	int total = 0;
 	this->nbBlocks.y = row;
 	while (mapFile >> std::noskipws >> ch) {
 		if (ch == '\n') {
@@ -148,7 +147,7 @@ void Map::readMap(AssetsManager& assets, Quadtree* quadtree) {
 			quadtree->insert(blockSize * col, size.y - row * blockSize, "flag");
 		}
 	}
-	this->nbBlocks.x = maxCol;
+	this->nbBlocks.x = maxCol + 1;
 	//std::cout << total << std::endl; // 168 correspond bien � tous les �l�ments de la map (sans 2 ni P ni * car pas encore mis)
 }
 

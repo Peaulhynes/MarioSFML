@@ -138,19 +138,18 @@ void Game::gameLoop()
 
 
 		const sf::Vector2f viewActual(trunc(map->player->getX() / WINDOW_WIDTH) * WINDOW_WIDTH, trunc(map->player->getY() / WINDOW_HEIGHT) * WINDOW_HEIGHT);
-		sf::Vector2f screenCenter((float)window.getSize().x / 2, (float)window.getSize().y / 2);
+		sf::Vector2f screenCenter(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 		sf::Vector2f mapPosition(screenCenter);
 		float playerX = map->player->getX();
 
 		/* middle of map */
-		if (playerX > screenCenter.x && playerX < map->size.x - screenCenter.x) {
-			mapPosition.x = playerX + farBackground.first;
-		}
-
+		if (playerX > screenCenter.x && playerX < map->size.x - screenCenter.x) 
+			mapPosition.x = playerX;
+	
 		/* extremities of map */
 		else {
 			if (playerX >= map->size.x - screenCenter.x)
-				mapPosition.x = map->size.x - screenCenter.x + 100;
+				mapPosition.x = map->size.x - screenCenter.x;
 		}
 		
 		mapView.setCenter(mapPosition);

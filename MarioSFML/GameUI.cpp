@@ -66,10 +66,10 @@ StartMenu::StartMenu(AssetsManager& assets, sf::RenderWindow& window) : GameUI()
 
 	//Overlay
 	this->overlay = sf::RectangleShape(sf::Vector2f((float)window.getSize().x, (float)window.getSize().y));
-	overlay.setFillColor(sf::Color(0, 0, 0, 255));
+	overlay.setFillColor(sf::Color(0, 0, 0, 200));
 
 	//Title
-	title.setString("PAUSE");
+	title.setString("MAD FOREST");
 	title.setFont(assets.getFRef("minecraft"));
 	title.setCharacterSize(BIG_FONT_SIZE);
 	sf::FloatRect titleRect = title.getLocalBounds();
