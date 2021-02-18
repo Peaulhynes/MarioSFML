@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <SFML/Graphics.hpp>
+#include <math.h>  
 #include "AssetsManager.h"
 
 enum GameStatus {

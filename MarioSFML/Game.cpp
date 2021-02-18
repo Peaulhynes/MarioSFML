@@ -136,6 +136,8 @@ void Game::gameLoop()
 		victoryMenu->update(status);
 		mainUI->update(status);
 
+
+		const sf::Vector2f viewActual(trunc(map->player->getX() / WINDOW_WIDTH) * WINDOW_WIDTH, trunc(map->player->getY() / WINDOW_HEIGHT) * WINDOW_HEIGHT);
 		sf::Vector2f screenCenter((float)window.getSize().x / 2, (float)window.getSize().y / 2);
 		sf::Vector2f mapPosition(screenCenter);
 		float playerX = map->player->getX();
@@ -162,6 +164,14 @@ void Game::gameLoop()
 
 		//Near background layer
 		window.setView(nearBackgroundView);
+
+		nearBackground.second.setPosition(viewActual.x, viewActual.y);
+		window.draw(nearBackground.second);
+
+		nearBackground.second.setPosition(viewActual.x - WINDOW_WIDTH, viewActual.y);
+		window.draw(nearBackground.second);
+
+		nearBackground.second.setPosition(viewActual.x + WINDOW_WIDTH, viewActual.y);
 		window.draw(nearBackground.second);
 		
 		//Map layer
