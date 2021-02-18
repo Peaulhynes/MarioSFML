@@ -17,12 +17,12 @@ public:
     void subdivide();
     std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> queryRange(float x, float y, float halfDimensionX, float halfDimensionY);
     void removeItem(float x, float y, float halfDimensionX, float halfDimensionY);
-
+    /*
     float getX();
     float getY();
     float getHalfX();
     float getHalfY();
-    void setXYHalf(float x, float y, float halfX, float halfY);
+    void setXYHalf(float x, float y, float halfX, float halfY);*/
 
 private:
     const int QT_NODE_CAPACITY = 4;

@@ -8,14 +8,17 @@ enum GameStatus {
     START,
     INGAME,
     PAUSE,
-    GAMEOVER
+    GAMEOVER,
+    VICTORY
 };
 
 class View;
+class StartMenu;
 class PauseMenu;
 class GameOverMenu;
+class VictoryMenu;
+class MainUI;
 class Map;
-class GUI;
 
 class Game
 {
@@ -23,9 +26,11 @@ public:
     
     sf::RenderWindow window;
     AssetsManager assets;
+    StartMenu* startMenu;
     PauseMenu* pauseMenu;
     GameOverMenu* gameOverMenu;
-    GUI* gui;
+    VictoryMenu* victoryMenu;
+    MainUI* mainUI;
     Map* map;
 
     sf::View mapView;

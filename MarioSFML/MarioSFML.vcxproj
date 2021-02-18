@@ -19,29 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Block.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameOverMenu.cpp" />
-    <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="PauseMenu.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="AssetsManager.cpp" />
-    <ClCompile Include="Quadtree.cpp" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameOverMenu.h" />
-    <ClInclude Include="GUI.h" />
+    <ClInclude Include="GameUI.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="AssetsManager.h" />
     <ClInclude Include="Quadtree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssetsManager.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameUI.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Quadtree.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

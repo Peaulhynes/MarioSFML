@@ -57,4 +57,13 @@ public:
 	~Coin() = default;
 };
 
+/* --------------- FLAG --------------- */
+
+class Flag : public Block
+{
+public:
+	Flag(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
+	~Flag() = default;
+};
+
 #endif // !BLOCK_H

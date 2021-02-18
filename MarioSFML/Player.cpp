@@ -1,5 +1,5 @@
 #include "Player.h"
-#include <algorithm>
+//#include <algorithm>
 
 Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
     player.setSize(size);
@@ -8,7 +8,7 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 	this->size = size.y;
 	this->moveSpeed = 200.f;
 	this->isJumping = false;
-	this->maxJump = 100.f;
+	this->maxJump = 200.f;
 	this->posY = getY();
 	this->basePosY = getY();
 	this->startJumping = false;
@@ -20,10 +20,6 @@ Player::Player(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) {
 
 void Player::draw(sf::RenderWindow& window) {
     window.draw(player);
-}
-
-void Player::move(sf::Vector2f distance) {
-    player.move(distance);
 }
 
 void Player::jump(sf::Vector2f distance) {
@@ -75,16 +71,16 @@ int Player::getScore() {
 	return score;
 }
 
+int Player::getLife() {
+	return this->life;
+}
+
 sf::FloatRect Player::getGlobalBounds() {
 	return player.getGlobalBounds();
 }
 
 void Player::damage() {
 	this->life = std::max(this->life - 1, 0);
-}
-
-int Player::getLife() {
-	return this->life;
 }
 
 int Player::inputProcessing(float deltaTime) {
@@ -99,17 +95,17 @@ int Player::inputProcessing(float deltaTime) {
 		}
 		
 		jump({ 0, -moveSpeed * deltaTime });
-
+		
 		//RIGHT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			move({ moveSpeed * deltaTime, 0 });
+			player.move({ moveSpeed * deltaTime, 0 });
 		}
 		//LEFT
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-			move({ -moveSpeed * deltaTime, 0 });
+			player.move({ -moveSpeed * deltaTime, 0 });
 		}
 
-		return 0;
+		return Direction::UP;
 	}
 	else {
 		isJumping = false;
@@ -120,17 +116,17 @@ int Player::inputProcessing(float deltaTime) {
 
 	//RIGHT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		move({ moveSpeed * deltaTime, 0 });
-		return 1;
+		player.move({ moveSpeed * deltaTime, 0 });
+		return Direction::RIGHT;
 	}
 	//LEFT
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
 		if (getX() > moveSpeed * deltaTime)
-			move({ -moveSpeed * deltaTime, 0 });
-		return -1;
+			player.move({ -moveSpeed * deltaTime, 0 });
+		return Direction::LEFT;
 	}
 
-	return -2;
+	return Direction::DOWN;
 }
 
 void Player::stopJumping() {

@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-GUI::GUI(AssetsManager& assets, sf::RenderWindow& window, Map *map) {
+MainUI::MainUI(AssetsManager& assets, sf::RenderWindow& window, Map *map) {
 
 	this->map = map;
 	//Message
@@ -17,9 +17,9 @@ GUI::GUI(AssetsManager& assets, sf::RenderWindow& window, Map *map) {
 	this->active = false;
 }
 
-GUI::~GUI() {}
+MainUI::~MainUI() {}
 
-void GUI::update(int gameStatus) {
+void MainUI::update(int gameStatus) {
 	switch (gameStatus) {
 	case GameStatus::PAUSE:
 	case GameStatus::INGAME:
@@ -33,7 +33,7 @@ void GUI::update(int gameStatus) {
 	}
 }
 
-void GUI::draw(sf::RenderWindow& window) {
+void MainUI::draw(sf::RenderWindow& window) {
 	if (active) {
 		std::ostringstream oss;
 		int score = map->player->getScore();

@@ -28,13 +28,13 @@ protected:
 	float moveSpeed;
 };
 
-/* --------------- GOMBA --------------- */
+/* --------------- WOLF --------------- */
 
-class Gomba : public Enemy
+class Wolf : public Enemy
 {
 public:
-	Gomba(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
-	~Gomba() = default;
+	Wolf(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
+	~Wolf() = default;
 };
 
 #endif // !ENEMY_H

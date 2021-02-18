@@ -2,8 +2,7 @@
 #define PLAYER_H
 
 #include <SFML/Graphics.hpp>
-#include "Enemy.h"
-#include "Block.h"
+#include "Directions.h"
 
 class Player
 {
@@ -13,9 +12,6 @@ public:
 
     /* Draw player on specified window. */
 	void draw(sf::RenderWindow& window);
-
-    /* Move player with specified distance. */
-	void move(sf::Vector2f distance);
 
     /* Make the player jump with specified distance. */
 	void jump(sf::Vector2f distance);

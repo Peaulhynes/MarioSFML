@@ -25,9 +25,9 @@ void Enemy::draw(sf::RenderWindow& window) {
     window.draw(enemy);
 }
 
-/* --------------- GOMBA --------------- */
+/* --------------- WOLF --------------- */
 
-Gomba::Gomba(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Enemy(size, texture, position) {
+Wolf::Wolf(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Enemy(size, texture, position) {
     moveSpeed = 5;
 }
 

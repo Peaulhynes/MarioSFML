@@ -14,8 +14,9 @@ public:
 	std::map<std::pair<float, float>, Ground*> groundMap;
 	std::map<std::pair<float, float>, Enemy*> enemyMap;
 	std::map<std::pair<float, float>, Coin*> coinMap;
+	std::map<std::pair<float, float>, Flag*> flagMap;
 
-	Quadtree quadtree;
+	Quadtree* quadtree;
 
 	float blockSize;
 	sf::Vector2f size;
@@ -29,10 +30,10 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	/* Load map from text file and initialize it in memory. */
-	void readMap(AssetsManager& assets, Quadtree& quadtree);
+	void readMap(AssetsManager& assets, Quadtree* quadtree);
 
 	/* Check collisions in map. */
-	void checkCollisions(int input);
+	int checkCollisions(int input);
 };
 
 #endif // !MAP_H

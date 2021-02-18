@@ -1,8 +1,7 @@
 #include "Game.h"
-#include "PauseMenu.h"
-#include "GameOverMenu.h"
+#include "GameUI.h"
 #include "Map.h"
-#include "GUI.h"
+#include "Directions.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -20,10 +19,12 @@ Game::Game()
 	loadTextures();
 	loadFonts();
 
+	this->map = new Map(assets, this->window);
+	this->startMenu = new StartMenu(assets, this->window);
 	this->pauseMenu = new PauseMenu(assets, this->window);
 	this->gameOverMenu = new GameOverMenu(assets, this->window);
-	this->map = new Map(assets, this->window);
-	this->gui = new GUI(assets, this->window, this->map);
+	this->victoryMenu = new VictoryMenu(assets, this->window);
+	this->mainUI = new MainUI(assets, this->window, this->map);
 
 	this->farBackground.first = FAR_BACKGROUND_SPEED;
 	this->farBackground.second.setTexture(assets.getTRef("farBackground"));
@@ -42,17 +43,21 @@ Game::Game()
 	this->nearBackgroundView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	this->nearBackgroundView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 
-	this->status = GameStatus::INGAME;
+	this->status = GameStatus::START;
 }
 
 Game::~Game()
 {
+	delete startMenu;
+	startMenu = nullptr;
 	delete pauseMenu;
 	pauseMenu = nullptr;
 	delete gameOverMenu;
     gameOverMenu = nullptr;
-	delete gui;
-	gui = nullptr;
+	delete victoryMenu;
+	victoryMenu = nullptr;
+	delete mainUI;
+	mainUI = nullptr;
 	delete map;
 	map = nullptr;
 }
@@ -62,8 +67,11 @@ void Game::loadTextures() {
 	assets.loadTexture("nearBackground", "assets/sprites/nearBackground.png");
 	assets.loadTexture("player", "assets/sprites/player.png");
 	assets.loadTexture("ground", "assets/sprites/ground.png");
-	assets.loadTexture("gomba", "assets/sprites/gomba.png");
+	assets.loadTexture("wolf", "assets/sprites/wolf.png");
 	assets.loadTexture("coin", "assets/sprites/coin.png");
+	assets.loadTexture("flagBottom", "assets/sprites/flag_bottom.png");
+	assets.loadTexture("flagMiddle", "assets/sprites/flag_middle.png");
+	assets.loadTexture("flagTop", "assets/sprites/flag_top.png");
 }
 
 void Game::loadFonts() {
@@ -73,11 +81,13 @@ void Game::loadFonts() {
 void Game::gameLoop()
 {
 	sf::Clock clock;
+
     while (this->window.isOpen())
     {
 		sf::Event event;
         sf::Time elapsed = clock.restart();
         float deltaTime = elapsed.asSeconds();
+
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 
@@ -98,6 +108,7 @@ void Game::gameLoop()
 					switch (status) {
 						case GameStatus::GAMEOVER:
 						case GameStatus::START:
+						case GameStatus::VICTORY:
 							window.close();
 							break;
 						case GameStatus::INGAME:
@@ -110,17 +121,20 @@ void Game::gameLoop()
 							break;
 					}
 				}
+				if (event.key.code == sf::Keyboard::Enter && status == GameStatus::START)
+					status = GameStatus::INGAME;
 			}
 		}
 
 		if (status == GameStatus::INGAME) {
-			map->checkCollisions(map->player->inputProcessing(deltaTime));
-			if (map->player->getLife() == 0) 
-				status = GameStatus::GAMEOVER;
+			status = map->checkCollisions(map->player->inputProcessing(deltaTime));
 		}
+
+		startMenu->update(status);
 		pauseMenu->update(status);
 		gameOverMenu->update(status);
-		gui->update(status);
+		victoryMenu->update(status);
+		mainUI->update(status);
 
 		sf::Vector2f screenCenter((float)window.getSize().x / 2, (float)window.getSize().y / 2);
 		sf::Vector2f mapPosition(screenCenter);
@@ -134,7 +148,7 @@ void Game::gameLoop()
 		/* extremities of map */
 		else {
 			if (playerX >= map->size.x - screenCenter.x)
-				mapPosition.x = map->size.x +100- screenCenter.x;
+				mapPosition.x = map->size.x - screenCenter.x + 100;
 		}
 		
 		mapView.setCenter(mapPosition);
@@ -156,9 +170,11 @@ void Game::gameLoop()
 
 		//UI
 		window.setView(window.getDefaultView());
+		startMenu->draw(window);
 		pauseMenu->draw(window);
 		gameOverMenu->draw(window);
-		gui->draw(window);
+		victoryMenu->draw(window);
+		mainUI->draw(window);
 
 		window.display();
     }

@@ -39,3 +39,7 @@ Brick::Brick(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : B
 /* --------------- COIN --------------- */
 
 Coin::Coin(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}
+
+/* --------------- FLAG --------------- */
+
+Flag::Flag(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}

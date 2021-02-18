@@ -1,17 +1,7 @@
 #include "Quadtree.h"
 #include <iostream>
 
-Quadtree::Quadtree() {
-    this->x = 0.f;
-    this->y = 0.f;
-    this->halfDimensionX = 0.f;
-    this->halfDimensionY = 0.f;
-    this->northWest = NULL;
-    this->northEast = NULL;
-    this->southWest = NULL;
-    this->southEast = NULL;
 
-}
 
 Quadtree::Quadtree(float x, float y, float halfDimensionX, float halfDimensionY) {
     this->x = x;
@@ -34,7 +24,7 @@ Quadtree::~Quadtree() {
     delete southEast;
     southEast = nullptr;
 }
-
+/*
 float Quadtree::getX() {
     return x;
 }
@@ -52,7 +42,7 @@ void Quadtree::setXYHalf(float x, float y, float halfX, float halfY) {
     this->y = y;
     this->halfDimensionX = halfX;
     this->halfDimensionY = halfY;
-}
+}*/
 
 bool Quadtree::insert(float x, float y, std::string type) {
 
@@ -77,7 +67,6 @@ bool Quadtree::insert(float x, float y, std::string type) {
         subdivide();
     }
 
-
     //We have to add the points/data contained into this quad array to the new quads if we only want 
     //the last node to hold the data 
 
@@ -97,8 +86,6 @@ bool Quadtree::insert(float x, float y, std::string type) {
         //std::cout << "insert se \n"; 
         return true;
     }
-
-
 
     // Otherwise, the point cannot be inserted for some unknown reason (this should never happen)
     return false;
@@ -141,8 +128,6 @@ std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> Qu
         }
     }
 
-
-
     // Terminate here, if there are no children
     if (northWest == NULL) {
         //std::cout << "query no child \n";
@@ -150,7 +135,6 @@ std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> Qu
         // std::cout << std::get<0>(res).size() << "\n";
         return res;
     }
-
 
     // Otherwise, add the points from the children
     std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> resNW = northWest->queryRange(x, y, halfDimensionX, halfDimensionY);
@@ -218,13 +202,10 @@ void Quadtree::removeItem(float x, float y, float halfDimensionX, float halfDime
         }
     }
 
-
-
     // Terminate here, if there are no children
     if (northWest == NULL) {
         return;
     }
-
 
     // Otherwise, remove the points from the children
     northWest->removeItem(x, y, halfDimensionX, halfDimensionY);
