@@ -22,6 +22,12 @@ void AssetsManager::loadFont(const std::string& name, const std::string& filenam
     this->fonts[name] = font;
 }
 
+void AssetsManager::loadMap(const std::string& name, const std::string& filename)
+{   
+    /* Add map to the list of maps */
+    this->maps[name] = filename;
+}
+
 sf::Texture& AssetsManager::getTRef(const std::string& texture)
 {
     return this->textures.at(texture);
@@ -30,4 +36,9 @@ sf::Texture& AssetsManager::getTRef(const std::string& texture)
 sf::Font& AssetsManager::getFRef(const std::string& font)
 {
     return this->fonts.at(font);
+}
+
+std::string& AssetsManager::getMRef(const std::string& map)
+{
+    return this->maps.at(map);
 }

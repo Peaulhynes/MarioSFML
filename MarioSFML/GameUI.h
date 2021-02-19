@@ -18,6 +18,9 @@ public:
 	/* Draw UI on specified window. */
 	virtual void draw(sf::RenderWindow& window) = 0;
 
+	/* Get activity of widget */
+	bool getActive();
+
 protected:
 	bool active;
 };
@@ -34,6 +37,7 @@ public:
 
 private:
 	Map* map;
+	sf::RectangleShape box;
 	sf::Text scoreText;
 	sf::Text lifeText;
 };
@@ -51,7 +55,8 @@ public:
 private:
 	sf::RectangleShape overlay;
 	sf::Text title;
-	sf::Text message;
+	sf::Text message1;
+	sf::Text message2;
 	sf::Text credits;
 };
 
@@ -82,8 +87,9 @@ public:
 
 private:
 	sf::RectangleShape overlay;
-	sf::Text title;
-	sf::Text message;
+	sf::Text title; 
+	sf::Text message1;
+	sf::Text message2;
 };
 
 /* --------------- VictoryMenu --------------- */
@@ -99,6 +105,8 @@ public:
 private:
 	sf::RectangleShape overlay;
 	sf::Text title;
+	sf::Text message1;
+	sf::Text message2;
 };
 
 #endif // !GAMEUI_H

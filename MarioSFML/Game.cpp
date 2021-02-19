@@ -19,14 +19,17 @@ Game::Game()
 	// Assets loading
 	loadTextures();
 	loadFonts();
+	loadMaps();
 
 	// Game creation
 	this->map = new Map(assets, this->window);
-	this->startMenu = new StartMenu(assets, this->window);
-	this->pauseMenu = new PauseMenu(assets, this->window);
-	this->gameOverMenu = new GameOverMenu(assets, this->window);
-	this->victoryMenu = new VictoryMenu(assets, this->window);
-	this->mainUI = new MainUI(assets, this->window, this->map);
+
+	// Widgets
+	widgets.insert(std::make_pair("MainUI", new MainUI(assets, this->window, this->map)));
+	widgets.insert(std::make_pair("StartMenu", new StartMenu(assets, this->window)));
+	widgets.insert(std::make_pair("PauseMenu", new PauseMenu(assets, this->window)));
+	widgets.insert(std::make_pair("GameOverMenu", new GameOverMenu(assets, this->window)));
+	widgets.insert(std::make_pair("VictoryMenu", new VictoryMenu(assets, this->window)));
 
 	// Views and backgrounds
 	this->farBackground.first = FAR_BACKGROUND_SPEED;
@@ -52,16 +55,10 @@ Game::Game()
 
 Game::~Game()
 {
-	delete startMenu;
-	startMenu = nullptr;
-	delete pauseMenu;
-	pauseMenu = nullptr;
-	delete gameOverMenu;
-    gameOverMenu = nullptr;
-	delete victoryMenu;
-	victoryMenu = nullptr;
-	delete mainUI;
-	mainUI = nullptr;
+	for (auto element : widgets) {
+		delete element.second;
+		element.second = nullptr;
+	}
 	delete map;
 	map = nullptr;
 }
@@ -80,6 +77,19 @@ void Game::loadTextures() {
 
 void Game::loadFonts() {
 	assets.loadFont("minecraft", "assets/fonts/minecraft.ttf");
+}
+
+void Game::loadMaps() {
+	assets.loadMap("map1", "assets/maps/map1.txt");
+	assets.loadMap("map2", "assets/maps/map2.txt");
+}
+
+void Game::restart() {
+	delete map;
+	map = new Map(assets, window);
+	delete widgets.find("MainUI")->second;
+	widgets.find("MainUI")->second = new MainUI(assets, this->window, this->map);
+	status = GameStatus::START;
 }
 
 void Game::gameLoop()
@@ -106,95 +116,98 @@ void Game::gameLoop()
 				window.close();
 				break;
 
-			
 			case sf::Event::KeyPressed:
 
-				// Enter (only in start menu)
-				if (event.key.code == sf::Keyboard::Enter && status == GameStatus::START)
-					status = GameStatus::INGAME;
-
-				// Escape
-				if (event.key.code == sf::Keyboard::Escape) {
-					switch (status) {
-						case GameStatus::GAMEOVER:
-						case GameStatus::START:
-						case GameStatus::VICTORY:
-							window.close();
-							break;
-						case GameStatus::INGAME:
-							status = GameStatus::PAUSE;
-							break;
-						case GameStatus::PAUSE:
-							status = GameStatus::INGAME;
-							break;
-						default:
-							break;
+				// Level choice in start menu
+				if (status == GameStatus::START) {
+					if (event.key.code == sf::Keyboard::Num1) {
+						status = GameStatus::INGAME;
+						map->readMap(assets, assets.getMRef("map1"));
+					}
+					if (event.key.code == sf::Keyboard::Num2) {
+						status = GameStatus::INGAME;
+						map->readMap(assets, assets.getMRef("map2"));
 					}
 				}
-				
+
+				if (event.key.code == sf::Keyboard::P) {
+					if (status == GameStatus::INGAME)
+						status = GameStatus::PAUSE;
+					else if (status == GameStatus::PAUSE)
+						status = GameStatus::INGAME;
+				}
+
+				// Escape
+				if (event.key.code == sf::Keyboard::Escape) 
+					window.close();
+					
+				if (event.key.code == sf::Keyboard::Enter) {
+					if (status == GameStatus::GAMEOVER || status == GameStatus::VICTORY) {
+						restart();
+						status = GameStatus::START;
+					}
+				}
 			}
 		}
 		// Check user input and player collisions if the game is running
-		if (status == GameStatus::INGAME) {
+		if (status == GameStatus::INGAME) 
 			status = map->checkCollisions(map->player->inputProcessing(deltaTime, map->size.x - 40));
-		}
 
-		// Set UI activity
-		startMenu->update(status);
-		pauseMenu->update(status);
-		gameOverMenu->update(status);
-		victoryMenu->update(status);
-		mainUI->update(status);
-
-		// Views management
-		const sf::Vector2f actualPosition(trunc(map->player->getX() / WINDOW_WIDTH) * WINDOW_WIDTH, trunc(map->player->getY() / WINDOW_HEIGHT) * WINDOW_HEIGHT);
-		sf::Vector2f screenCenter(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-		sf::Vector2f mapPosition(screenCenter);
-		float playerX = map->player->getX();
-
-		// Middle of map
-		if (playerX > screenCenter.x && playerX < map->size.x - screenCenter.x) 
-			mapPosition.x = playerX;
-	
-		// Extremities of map
-		else {
-			if (playerX >= map->size.x - screenCenter.x)
-				mapPosition.x = map->size.x - screenCenter.x;
-		}
-		
-		mapView.setCenter(mapPosition);
-		nearBackgroundView.setCenter(mapPosition);
+		// Update UI
+		for (auto widget : widgets) 
+			widget.second->update(status);
 
 		window.clear();
 
-		//Far background layer
-		window.setView(farBackgroundView);
-		window.draw(farBackground.second);
+		// Update views if the game started
+		if (status == GameStatus::INGAME || status == GameStatus::PAUSE) {
 
-		//Near background layer
-		window.setView(nearBackgroundView);
+			// Views management
+			const sf::Vector2f actualPosition(trunc(map->player->getX() / WINDOW_WIDTH) * WINDOW_WIDTH, trunc(map->player->getY() / WINDOW_HEIGHT) * WINDOW_HEIGHT);
+			sf::Vector2f screenCenter(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+			sf::Vector2f mapPosition(screenCenter);
+			float playerX = map->player->getX();
 
-		nearBackground.second.setPosition(actualPosition.x, actualPosition.y);
-		window.draw(nearBackground.second);
-
-		nearBackground.second.setPosition(actualPosition.x - WINDOW_WIDTH, actualPosition.y);
-		window.draw(nearBackground.second);
-
-		nearBackground.second.setPosition(actualPosition.x + WINDOW_WIDTH, actualPosition.y);
-		window.draw(nearBackground.second);
+			// Middle of map
+			if (playerX > screenCenter.x && playerX < map->size.x - screenCenter.x) 
+				mapPosition.x = playerX;
+	
+			// Extremities of map
+			else {
+				if (playerX >= map->size.x - screenCenter.x)
+					mapPosition.x = map->size.x - screenCenter.x;
+			}
 		
-		//Map layer
-		window.setView(mapView);
-		map->draw(window);
+			mapView.setCenter(mapPosition);
+			nearBackgroundView.setCenter(mapPosition);
+		
+			//Far background layer
+			window.setView(farBackgroundView);
+			window.draw(farBackground.second);
+
+			//Near background layer
+			window.setView(nearBackgroundView);
+
+			nearBackground.second.setPosition(actualPosition.x, actualPosition.y);
+			window.draw(nearBackground.second);
+
+			nearBackground.second.setPosition(actualPosition.x - WINDOW_WIDTH, actualPosition.y);
+			window.draw(nearBackground.second);
+
+			nearBackground.second.setPosition(actualPosition.x + WINDOW_WIDTH, actualPosition.y);
+			window.draw(nearBackground.second);
+
+			//Map layer
+			window.setView(mapView);
+			map->draw(window);
+		}
 
 		//UI
 		window.setView(window.getDefaultView());
-		startMenu->draw(window);
-		pauseMenu->draw(window);
-		gameOverMenu->draw(window);
-		victoryMenu->draw(window);
-		mainUI->draw(window);
-
+		for (auto widget : widgets) {
+			if (widget.second->getActive())
+				widget.second->draw(window);
+		}
 
 		window.display();
     }

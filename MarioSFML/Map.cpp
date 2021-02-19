@@ -6,7 +6,7 @@
 #define BLOCKSIZE 40;
 #define QUADTREE_X 3000
 #define QUADTREE_Y 800
-#define MAPFILE "assets/maps/map2.txt"
+#define DISTANCE 10
 
 Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
@@ -15,15 +15,32 @@ Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
 	this->quadtree = new Quadtree(QUADTREE_X , QUADTREE_Y , QUADTREE_X , QUADTREE_Y );
 
-	readMap(assets);
+	this->player = nullptr;
 
-	this->size = { nbBlocks.x * blockSize, nbBlocks.y * blockSize };
+	this->active = false;
+
+	//readMap(assets);
+
+	//this->size = { nbBlocks.x * blockSize, nbBlocks.y * blockSize };
 }
 
 Map::~Map() {
 
 	delete player;
 	player = nullptr;
+
+	for (auto element : groundMap) {
+		delete element.second;
+	}
+	for (auto element : enemyMap) {
+		delete element.second;
+	}
+	for (auto element : coinMap) {
+		delete element.second;
+	}
+	for (auto element : flagMap) {
+		delete element.second;
+	}
 
 	groundMap.clear();
 	enemyMap.clear();
@@ -36,27 +53,30 @@ Map::~Map() {
 
 void Map::draw(sf::RenderWindow& window) {
 
-	this->player->draw(window);
+	if (active) {
+		this->player->draw(window);
 
-	for (auto it = groundMap.begin(); it != groundMap.end(); ++it) 
-		it->second->draw(window);
-	
-	for (auto it = enemyMap.begin(); it != enemyMap.end(); ++it) 
-		it->second->draw(window);
-	
-	for (auto it = coinMap.begin(); it != coinMap.end(); ++it) 
-		it->second->draw(window);
-	
-	for (auto it = flagMap.begin(); it != flagMap.end(); ++it) 
-		it->second->draw(window);
+		for (auto it = groundMap.begin(); it != groundMap.end(); ++it)
+			it->second->draw(window);
+
+		for (auto it = enemyMap.begin(); it != enemyMap.end(); ++it)
+			it->second->draw(window);
+
+		for (auto it = coinMap.begin(); it != coinMap.end(); ++it)
+			it->second->draw(window);
+
+		for (auto it = flagMap.begin(); it != flagMap.end(); ++it)
+			it->second->draw(window);
+	}
 }
 
-void Map::readMap(AssetsManager& assets) {
+void Map::readMap(AssetsManager& assets, std::string& filename) {
 
+	active = true;
 	int row = 0, col = -1;
 	int maxCol = 0;
 	char ch;
-	std::fstream mapFile(MAPFILE, std::fstream::in);
+	std::fstream mapFile(filename, std::fstream::in);
 	std::string line;
 
 	while (std::getline(mapFile, line)) {
@@ -120,6 +140,7 @@ void Map::readMap(AssetsManager& assets) {
 		}
 	}
 	this->nbBlocks.x = maxCol + 1;
+	this->size = { nbBlocks.x * blockSize, nbBlocks.y * blockSize };
 }
 
 int Map::checkCollisions(int input) {
@@ -141,7 +162,7 @@ int Map::checkCollisions(int input) {
 			/* if the player is colliding with an enemy */
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type =="enemy") {
 				player->damage();
-				player->setPosition(sf::Vector2f{ xTemp - player->getGlobalBounds().width, player->getY() });
+				player->setPosition(sf::Vector2f{ xTemp - player->getGlobalBounds().width - DISTANCE, player->getY()});
 				if (player->getLife() == 0)
 					return GameStatus::GAMEOVER;
 			}
@@ -203,7 +224,7 @@ int Map::checkCollisions(int input) {
 			/* if the player is colliding with an enemy */
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "enemy") {
 				player->damage();
-				player->setPosition(sf::Vector2f{ xTemp + player->getGlobalBounds().width , player->getY() });
+				player->setPosition(sf::Vector2f{ xTemp + player->getGlobalBounds().width + DISTANCE, player->getY() });
 				if (player->getLife() == 0)
 					return GameStatus::GAMEOVER;
 			}
@@ -273,6 +294,7 @@ int Map::checkCollisions(int input) {
 						break;
 					}
 				}
+				player->setScore(player->getScore() + 5);
 			}
 
 			/* if the player is colliding with a coin */

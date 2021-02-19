@@ -19,6 +19,7 @@ class PauseMenu;
 class GameOverMenu;
 class VictoryMenu;
 class MainUI;
+class GameUI;
 class Map;
 
 class Game
@@ -26,20 +27,16 @@ class Game
 public:
     
     sf::RenderWindow window;
+    std::map<std::string, GameUI*>widgets;
     AssetsManager assets;
-    StartMenu* startMenu;
-    PauseMenu* pauseMenu;
-    GameOverMenu* gameOverMenu;
-    VictoryMenu* victoryMenu;
-    MainUI* mainUI;
     Map* map;
-
+    
     std::pair<float, sf::Sprite> farBackground;
     std::pair<float, sf::Sprite> nearBackground;
+
     sf::View farBackgroundView;
     sf::View nearBackgroundView;
     sf::View mapView;
-
     int status;
 
 public:
@@ -52,6 +49,12 @@ public:
 
     /* Load all game fonts. */
     void loadFonts();
+
+    /* Load all game maps. */
+    void loadMaps();
+
+    /* Restart the game. */
+    void restart();
 
     /* Main loop of the game. */
     void gameLoop();

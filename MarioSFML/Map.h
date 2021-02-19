@@ -22,6 +22,7 @@ public:
 	sf::Vector2f size;
 	sf::Vector2i nbBlocks;
 
+	bool active;
 public:
 	Map(AssetsManager& assets, sf::RenderWindow& window);
 	~Map();
@@ -30,7 +31,7 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	/* Load map from text file and initialize it in memory. */
-	void readMap(AssetsManager& assets);
+	void readMap(AssetsManager& assets, std::string& filename);
 
 	/* Check collisions in map. */
 	int checkCollisions(int input);
