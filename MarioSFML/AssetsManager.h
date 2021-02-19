@@ -7,13 +7,12 @@
 
 enum LoadingCodes
 {
-    LOADING_TEXTURE_CODE,
+    LOADING_TEXTURE_CODE = 10,
     LOADING_FONT_CODE
 };
 
 class AssetsManager
 {
-
 public:
 
     AssetsManager() = default;

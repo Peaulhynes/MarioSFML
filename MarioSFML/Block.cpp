@@ -32,9 +32,6 @@ void Block::draw(sf::RenderWindow& window) {
 
 Ground::Ground(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}
 
-/* --------------- BRICK --------------- */
-
-Brick::Brick(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position) : Block(size, texture, position){}
 
 /* --------------- COIN --------------- */
 

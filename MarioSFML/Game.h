@@ -34,12 +34,11 @@ public:
     MainUI* mainUI;
     Map* map;
 
-    sf::View mapView;
-
     std::pair<float, sf::Sprite> farBackground;
     std::pair<float, sf::Sprite> nearBackground;
     sf::View farBackgroundView;
     sf::View nearBackgroundView;
+    sf::View mapView;
 
     int status;
 

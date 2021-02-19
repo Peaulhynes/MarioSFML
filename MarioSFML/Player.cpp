@@ -110,9 +110,7 @@ int Player::inputProcessing(float deltaTime, float mapSizeX) {
 	}
 	else {
 		isJumping = false;
-
 		jump({ 0, -moveSpeed * deltaTime });
-
 	}
 
 	//RIGHT

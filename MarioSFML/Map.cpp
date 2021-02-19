@@ -6,6 +6,7 @@
 #define BLOCKSIZE 40;
 #define QUADTREE_X 3000
 #define QUADTREE_Y 800
+#define MAPFILE "assets/maps/map2.txt"
 
 Map::Map(AssetsManager& assets, sf::RenderWindow& window) {
 
@@ -37,22 +38,17 @@ void Map::draw(sf::RenderWindow& window) {
 
 	this->player->draw(window);
 
-	for (auto it = groundMap.begin(); it != groundMap.end(); ++it) {
+	for (auto it = groundMap.begin(); it != groundMap.end(); ++it) 
 		it->second->draw(window);
-	}
-
-	for (auto it = enemyMap.begin(); it != enemyMap.end(); ++it) {
+	
+	for (auto it = enemyMap.begin(); it != enemyMap.end(); ++it) 
 		it->second->draw(window);
-	}
-
-	for (auto it = coinMap.begin(); it != coinMap.end(); ++it) {
+	
+	for (auto it = coinMap.begin(); it != coinMap.end(); ++it) 
 		it->second->draw(window);
-	}
-
-	for (auto it = flagMap.begin(); it != flagMap.end(); ++it) {
+	
+	for (auto it = flagMap.begin(); it != flagMap.end(); ++it) 
 		it->second->draw(window);
-	}
-
 }
 
 void Map::readMap(AssetsManager& assets) {
@@ -60,7 +56,7 @@ void Map::readMap(AssetsManager& assets) {
 	int row = 0, col = -1;
 	int maxCol = 0;
 	char ch;
-	std::fstream mapFile("assets/maps/map1.txt", std::fstream::in);
+	std::fstream mapFile(MAPFILE, std::fstream::in);
 	std::string line;
 
 	while (std::getline(mapFile, line)) {
@@ -72,7 +68,7 @@ void Map::readMap(AssetsManager& assets) {
 
 	this->nbBlocks.y = row;
 
-	/* Read each char from the file */
+	// Read each char from the file 
 	while (mapFile >> std::noskipws >> ch) {
 		if (ch == '\n') {
 			row--;
@@ -84,9 +80,8 @@ void Map::readMap(AssetsManager& assets) {
 			col++;
 		}
 
-		if (ch == 'P') {
+		if (ch == 'P') 
 			this->player = new Player({ blockSize, blockSize }, &assets.getTRef("player"), { blockSize * col, size.y - row * blockSize});
-		}
 
 		if (ch == 'G') {
 			Ground* ground = new Ground({ blockSize, blockSize }, &assets.getTRef("ground"), { blockSize * col, size.y - row * blockSize });
@@ -129,7 +124,7 @@ void Map::readMap(AssetsManager& assets) {
 
 int Map::checkCollisions(int input) {
 
-	// player goes right
+	// Right
 	if (input == Direction::RIGHT) {
 		/* check if the player is colliding at his position */
 		std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree->queryRange(player->getX() + (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -191,7 +186,7 @@ int Map::checkCollisions(int input) {
 		}
 	}
 
-	//player goes left
+	// Left
 	if (input == Direction::LEFT) {
 		/* check if the player is colliding at his position */
 		std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree->queryRange(player->getX() - (player->getGlobalBounds().width / 2), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -252,7 +247,7 @@ int Map::checkCollisions(int input) {
 		}
 	}
 
-	// player fall
+	// Down
 	if (input == Direction::DOWN) {
 		/* check if the player is colliding at his position */
 		std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree->queryRange(player->getX(), player->getY() + (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -310,7 +305,7 @@ int Map::checkCollisions(int input) {
 		}
 	}
 
-	// player jump
+	// Up
 	if (input == Direction::UP) {
 		/* check if the player is colliding at his position */
 		std::tuple <std::vector<float>, std::vector<float>, std::vector<std::string>> res = this->quadtree->queryRange(player->getX(), player->getY() - (player->getGlobalBounds().height / 2), player->getGlobalBounds().width / 2, player->getGlobalBounds().height / 2);
@@ -349,9 +344,8 @@ int Map::checkCollisions(int input) {
 			}
 			
 			/* if the player is colliding with a ground */
-			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "ground") {
+			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize , blockSize )) && type == "ground")
 				player->stopJumping();
-			}
 
 			/* if the player is colliding with a flag */
 			if (player->getGlobalBounds().intersects(sf::FloatRect(xTemp, yTemp, blockSize, blockSize)) && type == "flag") {
@@ -359,7 +353,5 @@ int Map::checkCollisions(int input) {
 			}
 		}
 	}
-
 	return GameStatus::INGAME;
-
 }

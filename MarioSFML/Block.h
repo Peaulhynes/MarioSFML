@@ -39,15 +39,6 @@ public:
 	~Ground() = default;
 };
 
-/* --------------- BRICK --------------- */
-
-class Brick : public Block
-{
-public:
-	Brick(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
-	~Brick() = default;
-};
-
 /* --------------- COIN --------------- */
 
 class Coin : public Block
@@ -62,6 +53,7 @@ public:
 class Flag : public Block
 {
 public:
+
 	Flag(sf::Vector2f size, sf::Texture* texture, sf::Vector2f position);
 	~Flag() = default;
 };

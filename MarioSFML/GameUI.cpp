@@ -8,8 +8,6 @@ GameUI::GameUI() {
 	this->active = false;
 }
 
-GameUI::~GameUI() {}
-
 /* --------------- MainUI --------------- */
 
 MainUI::MainUI(AssetsManager& assets, sf::RenderWindow& window, Map* map) : GameUI() {

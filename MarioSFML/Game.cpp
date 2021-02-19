@@ -9,16 +9,18 @@
 #define FAR_BACKGROUND_SPEED 10
 #define NEAR_BACKGROUND_SPEED 5
 
-
 Game::Game()
 {
-    this->window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mario");
+	// Window creation
+    this->window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mad Forest");
     this->window.setFramerateLimit(60);
     this->window.setVerticalSyncEnabled(true);
 
+	// Assets loading
 	loadTextures();
 	loadFonts();
 
+	// Game creation
 	this->map = new Map(assets, this->window);
 	this->startMenu = new StartMenu(assets, this->window);
 	this->pauseMenu = new PauseMenu(assets, this->window);
@@ -26,6 +28,7 @@ Game::Game()
 	this->victoryMenu = new VictoryMenu(assets, this->window);
 	this->mainUI = new MainUI(assets, this->window, this->map);
 
+	// Views and backgrounds
 	this->farBackground.first = FAR_BACKGROUND_SPEED;
 	this->farBackground.second.setTexture(assets.getTRef("farBackground"));
 	this->farBackground.second.setScale({ (float)window.getSize().x / farBackground.second.getTexture()->getSize().x, (float)window.getSize().y / farBackground.second.getTexture()->getSize().y });
@@ -43,6 +46,7 @@ Game::Game()
 	this->nearBackgroundView.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	this->nearBackgroundView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
 
+	// Game status
 	this->status = GameStatus::START;
 }
 
@@ -91,19 +95,25 @@ void Game::gameLoop()
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 
-			//CHANGE WINDOW
+			// Lost focus on window
 			case sf::Event::LostFocus:
 				if (status == GameStatus::INGAME)
 					status = GameStatus::PAUSE;
 				break;
 
-			//CLOSE WINDOW
+			// Close window
 			case sf::Event::Closed:
 				window.close();
 				break;
 
-			//ESCAPE
+			
 			case sf::Event::KeyPressed:
+
+				// Enter (only in start menu)
+				if (event.key.code == sf::Keyboard::Enter && status == GameStatus::START)
+					status = GameStatus::INGAME;
+
+				// Escape
 				if (event.key.code == sf::Keyboard::Escape) {
 					switch (status) {
 						case GameStatus::GAMEOVER:
@@ -121,32 +131,32 @@ void Game::gameLoop()
 							break;
 					}
 				}
-				if (event.key.code == sf::Keyboard::Enter && status == GameStatus::START)
-					status = GameStatus::INGAME;
+				
 			}
 		}
-
+		// Check user input and player collisions if the game is running
 		if (status == GameStatus::INGAME) {
 			status = map->checkCollisions(map->player->inputProcessing(deltaTime, map->size.x - 40));
 		}
 
+		// Set UI activity
 		startMenu->update(status);
 		pauseMenu->update(status);
 		gameOverMenu->update(status);
 		victoryMenu->update(status);
 		mainUI->update(status);
 
-
-		const sf::Vector2f viewActual(trunc(map->player->getX() / WINDOW_WIDTH) * WINDOW_WIDTH, trunc(map->player->getY() / WINDOW_HEIGHT) * WINDOW_HEIGHT);
+		// Views management
+		const sf::Vector2f actualPosition(trunc(map->player->getX() / WINDOW_WIDTH) * WINDOW_WIDTH, trunc(map->player->getY() / WINDOW_HEIGHT) * WINDOW_HEIGHT);
 		sf::Vector2f screenCenter(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 		sf::Vector2f mapPosition(screenCenter);
 		float playerX = map->player->getX();
 
-		/* middle of map */
+		// Middle of map
 		if (playerX > screenCenter.x && playerX < map->size.x - screenCenter.x) 
 			mapPosition.x = playerX;
 	
-		/* extremities of map */
+		// Extremities of map
 		else {
 			if (playerX >= map->size.x - screenCenter.x)
 				mapPosition.x = map->size.x - screenCenter.x;
@@ -164,13 +174,13 @@ void Game::gameLoop()
 		//Near background layer
 		window.setView(nearBackgroundView);
 
-		nearBackground.second.setPosition(viewActual.x, viewActual.y);
+		nearBackground.second.setPosition(actualPosition.x, actualPosition.y);
 		window.draw(nearBackground.second);
 
-		nearBackground.second.setPosition(viewActual.x - WINDOW_WIDTH, viewActual.y);
+		nearBackground.second.setPosition(actualPosition.x - WINDOW_WIDTH, actualPosition.y);
 		window.draw(nearBackground.second);
 
-		nearBackground.second.setPosition(viewActual.x + WINDOW_WIDTH, viewActual.y);
+		nearBackground.second.setPosition(actualPosition.x + WINDOW_WIDTH, actualPosition.y);
 		window.draw(nearBackground.second);
 		
 		//Map layer
@@ -184,6 +194,7 @@ void Game::gameLoop()
 		gameOverMenu->draw(window);
 		victoryMenu->draw(window);
 		mainUI->draw(window);
+
 
 		window.display();
     }

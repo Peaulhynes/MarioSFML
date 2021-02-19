@@ -1,5 +1,6 @@
 #ifndef GAMEUI_H
 #define GAMEUI_H
+
 #include <SFML/Graphics.hpp>
 #include <sstream>
 #include "AssetsManager.h"
@@ -9,7 +10,7 @@ class GameUI
 {
 public:
 	GameUI();
-	~GameUI();
+	~GameUI() = default;
 
 	/* Update UI status depending on gameStatus. */
 	virtual void update(int gameStatus) = 0;
@@ -27,6 +28,7 @@ class MainUI : public GameUI
 {
 public:
 	MainUI(AssetsManager& assets, sf::RenderWindow& window, Map* map);
+	~MainUI() = default;
 	void update(int gameStatus);
 	void draw(sf::RenderWindow& window);
 
@@ -42,6 +44,7 @@ class StartMenu : public GameUI
 {
 public:
 	StartMenu(AssetsManager& assets, sf::RenderWindow& window);
+	~StartMenu() = default;
 	void update(int gameStatus);
 	void draw(sf::RenderWindow& window);
 
@@ -58,6 +61,7 @@ class PauseMenu : public GameUI
 {
 public:
 	PauseMenu(AssetsManager& assets, sf::RenderWindow& window);
+	~PauseMenu() = default;
 	void update(int gameStatus);
 	void draw(sf::RenderWindow& window);
 
@@ -72,6 +76,7 @@ class GameOverMenu : public GameUI
 {
 public:
 	GameOverMenu(AssetsManager& assets, sf::RenderWindow& window);
+	~GameOverMenu() = default;
 	void update(int gameStatus);
 	void draw(sf::RenderWindow& window);
 
@@ -87,6 +92,7 @@ class VictoryMenu : public GameUI
 {
 public:
 	VictoryMenu(AssetsManager& assets, sf::RenderWindow& window);
+	~VictoryMenu() = default;
 	void update(int gameStatus);
 	void draw(sf::RenderWindow& window);
 
